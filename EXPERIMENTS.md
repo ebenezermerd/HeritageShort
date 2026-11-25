@@ -124,3 +124,56 @@ navy, green) and their apparent age change from seed to seed, and they still rea
 even though the prompt says 16 and 17. So text alone holds one character well and two badly. That is
 the reason to test reference images (the likeness test, which needs both brothers' written photo
 consent first). Image: `outputs/experiments/e09_seeds.png`.
+
+## E10. How low should the ducking threshold be? (25 Nov)
+
+**Hypothesis.** The brief's starting threshold of 0.02 is about right, and a lower or higher value
+will make the music either vanish or barely move.
+
+**Change.** Same score pad and same narration line, `sidechaincompress` ratio 6, attack 300 ms,
+release 1500 ms, threshold swept over 0.01, 0.02, 0.05 and 0.1. Measured the mean level of the music
+alone during the first spoken line (E07's method).
+
+**Result.** The score dropped 20.2 dB at 0.01, 15.2 dB at 0.02, 8.6 dB at 0.05 and only 3.6 dB at 0.1
+(against -31.5 dB with no ducking). 0.02 keeps the music clearly audible between lines and clearly out
+of the way during them, so I kept it. 0.01 would make the score almost disappear under the voice.
+I judged by measured level, not by ear, and this narration is the placeholder voice.
+
+## E11. Does the placeholder voice's speaking rate change the film? (25 Nov)
+
+**Hypothesis.** The three speaking rates 140, 165 and 190 words per minute will change total
+narration time by only a few seconds, so the 65 s timeline does not depend on the rate.
+
+**Change.** Rendered all nine real lines (64 words) with macOS `say` at each rate and summed the
+durations.
+
+**Result.** 27.1 s at 140, 24.7 s at 165 (what the pipeline uses) and 22.9 s at 190, which is 2.4,
+2.6 and 2.8 words a second. Total narration moves by about 4 s across the whole range, so the
+timeline holds either way, because most of the 65 s is picture. It also matches the brief's guide of
+2 to 2.5 words a second. It does mean the film has long stretches without speech, which is the thing
+to ask the listeners about.
+
+## E12. Does a lower resolution make keyframes faster on Cloudflare? (25 Nov)
+
+**Hypothesis.** The brief advises drafting at low resolution to save time, so a 512x896 image should
+come back clearly faster than a 1024x1792 one.
+
+**Change.** Same prompt and seed (shot 3) at 512x896, 768x1344 and 1024x1792.
+
+**Result.** 8.9 s, 8.4 s and 9.7 s, and every size came back exactly as asked. Resolution made almost no
+difference, so the advice does not apply to this hosted API: its time is mostly fixed overhead. It
+is advice for GPU video time. For keyframes I use the larger size. Single run each, so differences of
+about a second are noise.
+
+## E13. What does the style block actually do? (25 Nov)
+
+**Hypothesis.** The shared style block ("warm hand-painted look, soft paper grain...") is what makes
+the film painted, and without it klein would draw something less consistent but still illustrated.
+
+**Change.** Shot 3 with the full prompt, and the same prompt with the style block removed, same seed.
+
+**Result.** Wrong guess about what "less consistent" would look like. Without the style block the
+model produced a near-photographic image of a young man jumping into a turquoise pool, with a very
+different look from every other shot. The style block is what makes the film painted and consistent,
+and it also keeps the brothers from being rendered as photoreal people, which fits what I decided in
+`ETHICS.md`. Image: `outputs/experiments/e13_compare.png`.
