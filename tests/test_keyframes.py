@@ -31,7 +31,7 @@ class FakeGen:
         self.calls = []
         self.fail_on = fail_on
 
-    def __call__(self, prompt, seed, size):
+    def __call__(self, prompt, seed, size, refs=None):
         self.calls.append((prompt, seed, size))
         if self.fail_on and self.fail_on in prompt:
             raise RuntimeError("429 quota")
@@ -97,3 +97,44 @@ def test_third_failure_is_logged_failed_and_other_shots_continue(isolated_root):
     assert (isolated_root / "outputs/keyframes/9x16/s01.png").exists()
     failed = [r for r in runs(isolated_root) if r["status"] == "failed"]
     assert len(failed) == 6  # 3 attempts x 2 ratios
+
+
+def _with_refs(root):
+    sb = json.loads(json.dumps(SB))
+    sb["references"] = [{"id": "spring", "prompt": "the empty spring", "seed": 5,
+                         "size": [1024, 768], "use": "the same spring, pool and trees"}]
+    sb["shots"][1]["refs"] = ["spring"]
+    ref = root / "outputs/references/spring.png"
+    ref.parent.mkdir(parents=True)
+    Image.new("RGB", (1024, 768), (0, 120, 140)).save(ref)
+    return sb, ref
+
+
+class RefGen(FakeGen):
+    def __call__(self, prompt, seed, size, refs=None):
+        self.refs = getattr(self, "refs", {})
+        self.refs[(seed, size)] = refs or []
+        return super().__call__(prompt, seed, size, refs)
+
+
+def test_shot_with_refs_sends_each_reference_under_512_and_names_it_in_the_prompt(isolated_root):
+    sb, _ = _with_refs(isolated_root)
+    gen = RefGen()
+    keyframes.run(sb, gen, sleep=lambda s: None)
+    sent = gen.refs[(2, (768, 1344))]
+    assert len(sent) == 1
+    w, h = Image.open(io.BytesIO(sent[0])).size
+    assert max(w, h) < 512
+    assert gen.refs[(1, (768, 1344))] == []
+    prompt = [c[0] for c in gen.calls if c[1] == 2][0]
+    assert "image 0" in prompt.lower() and "the same spring, pool and trees" in prompt
+
+
+def test_changing_a_reference_image_regenerates_the_shots_that_use_it(isolated_root):
+    sb, ref = _with_refs(isolated_root)
+    gen = RefGen()
+    keyframes.run(sb, gen, sleep=lambda s: None)
+    n = len(gen.calls)
+    Image.new("RGB", (1024, 768), (200, 10, 10)).save(ref)
+    keyframes.run(sb, gen, sleep=lambda s: None)
+    assert [c[1] for c in gen.calls[n:]] == [2, 2]

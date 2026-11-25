@@ -105,14 +105,18 @@ def schnell_payload(prompt: str, seed: int) -> dict:
     return {"prompt": prompt, "steps": 4}
 
 
-def cloudflare_flux(prompt: str, seed: int, size: tuple[int, int], model: str = FLUX_SCHNELL) -> bytes:
+def cloudflare_flux(prompt: str, seed: int, size: tuple[int, int], model: str = FLUX_SCHNELL,
+                    refs: list[bytes] | None = None) -> bytes:
     """Return image bytes from Cloudflare Workers AI. size is (width, height)."""
     account = require_env("CF_ACCOUNT_ID")
     url = f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/run/{model}"
     headers = {"Authorization": f"Bearer {require_env('CF_API_TOKEN')}"}
     if "klein" in model:
         fields = {"prompt": prompt, "width": str(size[0]), "height": str(size[1]), "seed": str(seed)}
-        r = requests.post(url, headers=headers, files={k: (None, v) for k, v in fields.items()}, timeout=180)
+        files = {k: (None, v) for k, v in fields.items()}
+        for i, data in enumerate(refs or []):
+            files[f"input_image_{i}"] = (f"ref{i}.png", data, "image/png")
+        r = requests.post(url, headers=headers, files=files, timeout=180)
     else:
         r = requests.post(url, headers=headers, json=schnell_payload(prompt, seed), timeout=180)
     if r.headers.get("content-type", "").startswith("image/"):

@@ -10,19 +10,19 @@
       "id": "beki",
       "name": "Bereket (Beki)",
       "age": 19,
-      "look": "the oldest and tallest of the three brothers, a lanky 19-year-old with warm brown skin, short curly black hair, athletic build, plain swim shorts"
+      "look": "the oldest and tallest of the three brothers, a lanky 19-year-old Ethiopian, with warm brown skin, short curly black hair, athletic build, plain swim shorts"
     },
     {
       "id": "tesfa",
       "name": "Tesahun (Tesfa)",
       "age": 17,
-      "look": "the middle brother, a slim 17-year-old with warm brown skin, short black hair, plain swim shorts"
+      "look": "the middle brother, a slim 17-year-old Ethiopian, with warm brown skin, short black hair, plain swim shorts"
     },
     {
       "id": "abeni",
       "name": "Abenezer (Abeni)",
       "age": 16,
-      "look": "the youngest, a 16-year-old with warm brown skin, short black hair, slightly shorter than the others, plain swim shorts"
+      "look": "the youngest, a 16-year-old Ethiopian, with warm brown skin, short black hair, slightly shorter than the others, plain swim shorts"
     }
   ],
   "shots": [
@@ -30,7 +30,7 @@
       "id": "s01",
       "reason": "Say where we are: the spring itself, before anyone appears.",
       "narration": "Arba Minch means forty springs.",
-      "image_prompt": "Wide view of a clear turquoise forest spring, a large fallen log lying submerged beneath the clear water and visible through the surface, tall trees on the bank, a red-brown earth clearing, early morning sun through the leaves, no people",
+      "image_prompt": "Wide view of the spring from the bank in early morning light, the turquoise pool and the fallen log under the water, no people",
       "seed": 101,
       "duration_s": 7,
       "motion": {
@@ -38,13 +38,16 @@
         "camera": "push_in",
         "prompt": "slow gentle push in, ripples moving on the water, leaves stirring in the breeze"
       },
-      "characters": []
+      "characters": [],
+      "refs": [
+        "spring"
+      ]
     },
     {
       "id": "s02",
       "reason": "Meet the three brothers without needing faces, and say how old they were.",
       "narration": "We only ever needed one. I was sixteen, Tesfa was seventeen, Beki was nineteen.",
-      "image_prompt": "Three teenage brothers walking side by side toward a forest spring, seen from behind, towels over their shoulders, the tallest on the left and the smallest on the right, dappled light",
+      "image_prompt": "Three brothers walking side by side along the red earth path toward the spring, seen from behind at a middle distance, towels over their shoulders, the tallest on the left and the smallest on the right, arms at their sides",
       "seed": 103,
       "duration_s": 7,
       "motion": {
@@ -56,19 +59,23 @@
         "beki",
         "tesfa",
         "abeni"
+      ],
+      "refs": [
+        "spring",
+        "brothers"
       ]
     },
     {
       "id": "s03",
       "reason": "The oldest goes first: Beki's jump starts the day.",
       "narration": "Beki, the oldest, always jumped first.",
-      "image_prompt": "The tallest teenage boy mid-air jumping from the bank into a turquoise spring, seen from behind, arms out wide, water waiting below",
+      "image_prompt": "Seen from far away across the pool: the tallest brother as a small dark silhouette high in the air above the spring against bright morning light through the trees, a simple clear body shape, arms out",
       "seed": 104,
       "duration_s": 6,
       "motion": {
-        "mode": "wan",
+        "mode": "kenburns",
         "camera": "pan_right",
-        "prompt": "the boy leaps and falls toward the water, camera follows gently"
+        "prompt": "slow pan following the jump"
       },
       "characters": [
         "beki"
@@ -78,19 +85,22 @@
           "type": "splash",
           "at_s": 1.6
         }
+      ],
+      "refs": [
+        "spring"
       ]
     },
     {
       "id": "s04",
-      "reason": "The middle brother follows: Tesfa goes second.",
+      "reason": "The middle brother follows: Tesfa goes second, shown by his splash.",
       "narration": "Then Tesfa.",
-      "image_prompt": "A slimmer teenage boy mid-jump over turquoise water, seen from the side at a distance, trees behind him",
+      "image_prompt": "A big white splash crown rising from the middle of the turquoise pool where the middle brother has just landed, only the top of his head visible inside the splash, droplets in the sunlight, seen from the bank",
       "seed": 104,
       "duration_s": 5,
       "motion": {
-        "mode": "kenburns",
-        "camera": "pan_left",
-        "prompt": "slow pan following the jump"
+        "mode": "wan",
+        "camera": "push_in",
+        "prompt": "the splash rises and falls back into the pool, ripples spread, camera steady"
       },
       "characters": [
         "tesfa"
@@ -100,13 +110,16 @@
           "type": "splash",
           "at_s": 1.4
         }
+      ],
+      "refs": [
+        "spring"
       ]
     },
     {
       "id": "s05",
       "reason": "The youngest goes last: Abeni hesitates at the edge, then leaps.",
       "narration": "And me, last.",
-      "image_prompt": "The smallest teenage boy standing at the edge of the bank, leaning forward about to jump, seen from behind at a distance, turquoise water ahead",
+      "image_prompt": "The youngest brother standing at the top of the red earth bank, seen from behind and far away, small in the frame, arms straight down at his sides, looking down at the turquoise pool",
       "seed": 107,
       "duration_s": 5,
       "motion": {
@@ -122,19 +135,23 @@
           "type": "splash",
           "at_s": 2.0
         }
+      ],
+      "refs": [
+        "spring",
+        "brothers"
       ]
     },
     {
       "id": "s06",
       "reason": "The tricks from the tree: the acrobatics Abeni remembers.",
       "narration": "Then it was flips off the tree, and whatever tricks we could think of.",
-      "image_prompt": "A teenage boy with warm brown skin and bare chest in dark swim shorts doing a flip from a tree branch over the spring, small in the frame and silhouetted against bright green leaves, water drops in the air",
+      "image_prompt": "Far away: a tiny dark silhouette of a boy mid-flip in the air beside the big tree's low branch over the spring, against bright sunlight through the leaves, water drops glittering below",
       "seed": 107,
       "duration_s": 7,
       "motion": {
-        "mode": "wan",
+        "mode": "kenburns",
         "camera": "pan_right",
-        "prompt": "the boy flips off the branch toward the water, camera steady"
+        "prompt": "slow pan along the branch"
       },
       "characters": [
         "tesfa"
@@ -144,19 +161,22 @@
           "type": "splash",
           "at_s": 1.8
         }
+      ],
+      "refs": [
+        "spring"
       ]
     },
     {
       "id": "s07",
-      "reason": "A close detail of the splashing, to show the joy without a face.",
+      "reason": "A close detail of the splashing, to show the joy without a body.",
       "narration": "And splashing.",
-      "image_prompt": "Close detail of one single pair of warm brown cupped hands scooping up turquoise spring water, bright drops frozen in the air, only two hands in the picture, soft blurred trees behind",
+      "image_prompt": "Close detail of the turquoise water surface of the spring exploding into bright spray and flying water drops in the sunlight, ripples spreading, no people, no hands",
       "seed": 108,
       "duration_s": 5,
       "motion": {
-        "mode": "kenburns",
+        "mode": "wan",
         "camera": "pull_out",
-        "prompt": "slow pull out from the splash"
+        "prompt": "water drops fly up and fall back, ripples spread outward, camera slowly pulls out"
       },
       "characters": [],
       "sfx": [
@@ -168,19 +188,22 @@
           "type": "splash",
           "at_s": 1.8
         }
+      ],
+      "refs": [
+        "spring"
       ]
     },
     {
       "id": "s08",
       "reason": "The core feeling: all three together, shouting and laughing.",
       "narration": "And all of us shouting. Whoa, whoa, whoa.",
-      "image_prompt": "Three teenage brothers all with the same warm brown skin standing chest-deep in turquoise water, mouths open shouting and laughing, arms down in the water, faces small and softly lit, seen from a distance",
+      "image_prompt": "The three brothers in the middle of the turquoise pool at a middle distance, only their heads and shoulders above the water, arms hidden under the surface, mouths open shouting and laughing, the tallest on the left",
       "seed": 110,
       "duration_s": 7,
       "motion": {
-        "mode": "wan",
+        "mode": "kenburns",
         "camera": "push_in",
-        "prompt": "the three splash and laugh, slow gentle push in"
+        "prompt": "slow gentle push in on the three"
       },
       "characters": [
         "beki",
@@ -196,27 +219,34 @@
           "type": "splash",
           "at_s": 2.2
         }
+      ],
+      "refs": [
+        "spring",
+        "brothers"
       ]
     },
     {
       "id": "s09",
       "reason": "Time has passed: the empty spring, quiet, to land the longing.",
       "narration": "I would give a lot to hear that noise again.",
-      "image_prompt": "The empty spring at golden light, ripples settling on the turquoise water, the fallen log visible below, long soft shadows, no people",
+      "image_prompt": "The same spring at golden evening light, empty and still, the fallen log visible under the water, long soft shadows, no people",
       "seed": 109,
       "duration_s": 7,
       "motion": {
-        "mode": "kenburns",
+        "mode": "wan",
         "camera": "pull_out",
-        "prompt": "slow pull out over the quiet water"
+        "prompt": "ripples settle on the water, light flickers through the leaves, camera slowly pulls out"
       },
-      "characters": []
+      "characters": [],
+      "refs": [
+        "spring"
+      ]
     },
     {
       "id": "s10",
       "reason": "Closing image: the three sitting together, no words needed.",
       "narration": null,
-      "image_prompt": "Three teenage brothers sitting side by side on the bank with their feet in the water, seen from behind, warm evening light",
+      "image_prompt": "The three brothers sitting side by side on the red earth bank, seen from behind, their feet in the water, warm evening light, the tallest on the left",
       "seed": 111,
       "duration_s": 6,
       "motion": {
@@ -228,6 +258,10 @@
         "beki",
         "tesfa",
         "abeni"
+      ],
+      "refs": [
+        "spring",
+        "brothers"
       ]
     }
   ],
@@ -240,5 +274,27 @@
   "end_card": {
     "text": "Made with AI. Painted from memory.",
     "duration_s": 3
-  }
+  },
+  "references": [
+    {
+      "id": "spring",
+      "seed": 201,
+      "size": [
+        1024,
+        768
+      ],
+      "prompt": "Wide establishing view of one forest spring in Arba Minch, Ethiopia: a round clear turquoise pool, a large fallen log lying under the water, a steep red-brown earth bank on the left, one big old tree with a long low branch leaning over the water on the right, tall trees all around, morning sun through the leaves, no people",
+      "use": "the spring: the same turquoise pool, the fallen log, the red-brown bank and the big tree with the low branch"
+    },
+    {
+      "id": "brothers",
+      "seed": 202,
+      "size": [
+        1024,
+        768
+      ],
+      "prompt": "Character reference sheet of three Ethiopian teenage brothers standing side by side facing the viewer, full body, arms relaxed straight down at their sides, plain pale background, each with exactly two arms, two hands and two legs. Left: the oldest, 19, the tallest, lanky, short curly black hair. Middle: 17, slim, short black hair. Right: the youngest, 16, a little shorter, short black hair. All three have the same warm brown skin and a clear family resemblance, and wear plain dark swim shorts",
+      "use": "the three brothers: keep their faces, builds, heights, skin and swim shorts"
+    }
+  ]
 }

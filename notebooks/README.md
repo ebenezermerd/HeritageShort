@@ -22,7 +22,7 @@ and write down in `FAILURES.md` whatever breaks.
    remaining weekly GPU quota from Kaggle's sidebar into `COSTS.md`.
 2. `10_acestep.ipynb`: three instrumental score candidates from the storyboard's
    `music` block. Download `/kaggle/working/music/` into `outputs/music/raw/`.
-3. `20_wan.ipynb`: four clips (shots 1, 3, 6, 8), 480x832, 81 frames. It saves each
+3. `20_wan.ipynb`: four clips (shots 1, 4, 7, 9: the spring, a splash, water drops, the empty spring), 480x832, 81 frames. It saves each
    clip as it finishes and skips ones already saved, so after a timeout just run it
    again. Download `/kaggle/working/shots/` into `outputs/shots/raw/`, **including the small `.json`
    file beside each clip**: it holds the job hash, and a clip without a matching hash is treated as

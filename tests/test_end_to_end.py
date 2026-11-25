@@ -32,7 +32,7 @@ class Fakes:
         self.tts_calls.append(text)
         return providers.pcm_to_wav(b"\x00\x10" * 24000)  # one second of a faint tone
 
-    def gen(self, prompt, seed, size):
+    def gen(self, prompt, seed, size, refs=None):
         self.gen_calls.append(prompt)
         buf = io.BytesIO()
         Image.new("RGB", (64, 112), (seed * 40, 90, 60)).save(buf, "JPEG")

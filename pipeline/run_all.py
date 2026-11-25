@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 from typing import Callable
 
-from pipeline import assemble, common, keyframes, music, narrate, providers, shots
+from pipeline import assemble, common, keyframes, music, narrate, providers, references, shots
 
 
 def restore_assets() -> None:
@@ -39,6 +39,7 @@ def pipeline(storyboard: dict, *, tts: Callable | None = None, gen: Callable | N
 
     restore_assets()
     durations = timed("narration", lambda: narrate.run(storyboard, tts, sleep, voice))
+    timed("references", lambda: references.run(storyboard, gen or keyframes.klein, sleep))
     timed("keyframes", lambda: keyframes.run(storyboard, gen or keyframes.klein, sleep))
     timed("shots", lambda: (shots.export_wan_jobs(storyboard), shots.run(storyboard, durations)))
     candidates = music.import_candidates()

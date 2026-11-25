@@ -207,8 +207,12 @@ I looked at all 30 and kept one per shot.
 **Result.** The first-pass pictures had real faults: shot 7 showed two pairs of hands (four hands),
 shot 6 showed a pale boy in a white shirt, and shot 8 gave the three boys different skin tones. In
 the candidates, shot 7's first option still showed an extra hand, and several others had odd arms or hands
-(I did not count them). Each shot had at least one
-clean option, and the brothers' ages now read differently (shot 8 has the tall oldest brother). The
+(I did not count them). I judged them on contact sheets at about 230x400 pixels and called each pick clean. That was
+wrong: the author watched the rebuilt film and still saw four fingers, extra legs and bodies that did not
+read as real. At that size extra fingers and a merged leg are invisible, so my review could not catch
+them. Re-seeding removed the worst fault (shot 7's four hands) but did not fix anatomy, and it did
+nothing for consistency: the brothers in shot 8 still look like three different people, and the spring
+is a different place in every shot. The
 catch from E14: because a seed cannot recreate an image, `candidates.pick` copies the chosen file
 into place and records it in the manifest, and the storyboard seed names which candidate it was.
 The 16:9 images were generated once each and I checked them by eye; I saw no extra limbs.

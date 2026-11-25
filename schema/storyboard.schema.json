@@ -2,28 +2,64 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Forty Springs storyboard",
   "type": "object",
-  "required": ["title", "ratios", "style_block", "characters", "shots", "music", "end_card"],
+  "required": [
+    "title",
+    "ratios",
+    "style_block",
+    "characters",
+    "shots",
+    "music",
+    "end_card"
+  ],
   "additionalProperties": false,
   "properties": {
-    "title": { "type": "string", "minLength": 1 },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
     "ratios": {
       "type": "array",
       "minItems": 1,
-      "items": { "enum": ["9:16", "16:9"] }
+      "items": {
+        "enum": [
+          "9:16",
+          "16:9"
+        ]
+      }
     },
-    "style_block": { "type": "string", "minLength": 10 },
+    "style_block": {
+      "type": "string",
+      "minLength": 10
+    },
     "characters": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "name", "age", "look"],
+        "required": [
+          "id",
+          "name",
+          "age",
+          "look"
+        ],
         "additionalProperties": false,
         "properties": {
-          "id": { "type": "string", "minLength": 1 },
-          "name": { "type": "string", "minLength": 1 },
-          "age": { "type": "integer", "minimum": 1 },
-          "look": { "type": "string", "minLength": 3 }
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "age": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "look": {
+            "type": "string",
+            "minLength": 3
+          }
         }
       }
     },
@@ -33,64 +69,204 @@
       "maxItems": 12,
       "items": {
         "type": "object",
-        "required": ["id", "reason", "narration", "image_prompt", "seed", "duration_s", "motion"],
+        "required": [
+          "id",
+          "reason",
+          "narration",
+          "image_prompt",
+          "seed",
+          "duration_s",
+          "motion"
+        ],
         "additionalProperties": false,
         "properties": {
-          "id": { "type": "string", "pattern": "^s[0-9]{2}$" },
-          "reason": { "type": "string", "pattern": "\\S" },
+          "id": {
+            "type": "string",
+            "pattern": "^s[0-9]{2}$"
+          },
+          "reason": {
+            "type": "string",
+            "pattern": "\\S"
+          },
           "narration": {
             "anyOf": [
-              { "type": "null" },
-              { "type": "string", "pattern": "\\S" }
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "pattern": "\\S"
+              }
             ]
           },
-          "image_prompt": { "type": "string", "pattern": "\\S" },
-          "characters": { "type": "array", "items": { "type": "string" } },
+          "image_prompt": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "characters": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "sfx": {
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["type", "at_s"],
+              "required": [
+                "type",
+                "at_s"
+              ],
               "additionalProperties": false,
               "properties": {
-                "type": { "enum": ["splash"] },
-                "at_s": { "type": "number", "minimum": 0 }
+                "type": {
+                  "enum": [
+                    "splash"
+                  ]
+                },
+                "at_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
               }
             }
           },
-          "seed": { "type": "integer", "minimum": 0 },
-          "duration_s": { "type": "number", "minimum": 3, "maximum": 12 },
+          "seed": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "duration_s": {
+            "type": "number",
+            "minimum": 3,
+            "maximum": 12
+          },
           "motion": {
             "type": "object",
-            "required": ["mode", "camera", "prompt"],
+            "required": [
+              "mode",
+              "camera",
+              "prompt"
+            ],
             "additionalProperties": false,
             "properties": {
-              "mode": { "enum": ["kenburns", "wan"] },
-              "camera": { "enum": ["push_in", "pull_out", "pan_left", "pan_right"] },
-              "prompt": { "type": "string", "pattern": "\\S" }
+              "mode": {
+                "enum": [
+                  "kenburns",
+                  "wan"
+                ]
+              },
+              "camera": {
+                "enum": [
+                  "push_in",
+                  "pull_out",
+                  "pan_left",
+                  "pan_right"
+                ]
+              },
+              "prompt": {
+                "type": "string",
+                "pattern": "\\S"
+              }
             }
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 4
           }
         }
       }
     },
     "music": {
       "type": "object",
-      "required": ["caption", "bpm", "key", "duration_s"],
+      "required": [
+        "caption",
+        "bpm",
+        "key",
+        "duration_s"
+      ],
       "additionalProperties": false,
       "properties": {
-        "caption": { "type": "string", "minLength": 10 },
-        "bpm": { "type": "integer", "minimum": 40, "maximum": 200 },
-        "key": { "type": "string", "minLength": 1 },
-        "duration_s": { "type": "number", "minimum": 30, "maximum": 120 }
+        "caption": {
+          "type": "string",
+          "minLength": 10
+        },
+        "bpm": {
+          "type": "integer",
+          "minimum": 40,
+          "maximum": 200
+        },
+        "key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "duration_s": {
+          "type": "number",
+          "minimum": 30,
+          "maximum": 120
+        }
       }
     },
     "end_card": {
       "type": "object",
-      "required": ["text", "duration_s"],
+      "required": [
+        "text",
+        "duration_s"
+      ],
       "additionalProperties": false,
       "properties": {
-        "text": { "type": "string", "minLength": 1 },
-        "duration_s": { "type": "number", "minimum": 2, "maximum": 5 }
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "duration_s": {
+          "type": "number",
+          "minimum": 2,
+          "maximum": 5
+        }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "prompt",
+          "seed",
+          "size",
+          "use"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "seed": {
+            "type": "integer"
+          },
+          "size": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 256,
+              "maximum": 1920
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "use": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
       }
     }
   }

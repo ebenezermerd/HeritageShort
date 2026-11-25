@@ -124,8 +124,16 @@ pale boy in a white shirt, shot 8 three different skin tones.
 rebuild, I tested the seed directly and found klein does not reproduce an image from the same seed
 (E14).
 
-**What fixed it.** Three candidates per shot, judged by eye (E15), and a `pick` step that keeps the
-chosen file instead of trusting the seed.
+**What did not fix it.** Three candidates per shot, judged by eye (E15), and a `pick` step that keeps
+the chosen file. I judged the candidates at thumbnail size and told the author the faults were gone.
+They were not: the author still found four fingers, extra legs and lifeless bodies, and the spring
+and the brothers changed from shot to shot.
+
+**What I am doing instead (E17 onward).** Fix it in the plan, not with more seeds. Redesign the
+people shots so hands and legs are hidden (small silhouettes, heads above the water, backs to
+camera), and condition every keyframe on two reference images, one spring plate and one sheet of the
+three brothers, through klein's `input_image_*` fields, as the brief suggests. Every candidate is
+checked at full resolution, figure by figure, and the author approves the picks before the build.
 
 **What I would do differently.** Look at every image the moment it is made, and treat "same seed" as a
 claim to test rather than a fact. It also means the Wan clips will animate clean pictures.

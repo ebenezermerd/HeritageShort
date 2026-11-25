@@ -12,14 +12,14 @@ from typing import Callable
 
 from pipeline import common
 from pipeline.common import Manifest, input_hash, log_run, with_retries
-from pipeline.keyframes import MODEL, SIZES, build_prompt, klein, to_png
+from pipeline.keyframes import MODEL, SIZES, build_prompt, klein, ref_paths, ref_payload, to_png
 
 STAGE = "candidates"
 RATIO = "9:16"
 
 
 def run(storyboard: dict, n: int = 3, shots: list[str] | None = None,
-        gen: Callable[[str, int, tuple[int, int]], bytes] = klein,
+        gen: Callable[..., bytes] = klein,
         sleep: Callable[[float], None] = time.sleep) -> dict[str, list[Path]]:
     manifest = Manifest(STAGE)
     size = SIZES[RATIO]
@@ -29,9 +29,11 @@ def run(storyboard: dict, n: int = 3, shots: list[str] | None = None,
         if shots and sid not in shots:
             continue
         prompt = build_prompt(storyboard, shot)
+        refs = ref_paths(storyboard, shot)
+        payload = ref_payload(refs)
         for seed in range(shot["seed"], shot["seed"] + n):
             path = common.ROOT / "outputs" / STAGE / sid / f"{seed}.png"
-            h = input_hash(prompt, seed, RATIO, MODEL)
+            h = input_hash(prompt, seed, RATIO, MODEL, *refs)
             key = f"{sid}@{seed}"
             if not manifest.is_fresh(key, h):
                 params = {"width": size[0], "height": size[1], "ratio": RATIO}
@@ -39,7 +41,7 @@ def run(storyboard: dict, n: int = 3, shots: list[str] | None = None,
                 def attempt(seed=seed, h=h, params=params, prompt=prompt, sid=sid) -> bytes:
                     start = time.time()
                     try:
-                        img = gen(prompt, seed, size)
+                        img = gen(prompt, seed, size, refs=payload)
                     except Exception as e:  # noqa: BLE001 - logged, then re-raised for the retry
                         log_run(STAGE, sid, "cloudflare", MODEL, params, seed, h, time.time() - start,
                                 "failed", error=str(e)[:300])
@@ -66,7 +68,7 @@ def pick(storyboard: dict, shot_id: str, seed: int) -> Path:
     dest = common.ROOT / "outputs" / "keyframes" / RATIO.replace(":", "x") / f"{shot_id}.png"
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(src, dest)
-    h = input_hash(build_prompt(storyboard, shot), seed, RATIO, MODEL)
+    h = input_hash(build_prompt(storyboard, shot), seed, RATIO, MODEL, *ref_paths(storyboard, shot))
     Manifest("keyframes").put(f"{shot_id}@{RATIO}", h, str(dest.relative_to(common.ROOT)))
     log_run("keyframes", shot_id, "cloudflare", MODEL, {"ratio": RATIO, "picked_from": src.name},
             seed, h, 0.0, "picked", error="chosen candidate kept as the keyframe")

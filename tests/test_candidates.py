@@ -27,7 +27,7 @@ class FakeGen:
     def __init__(self):
         self.calls = []
 
-    def __call__(self, prompt, seed, size):
+    def __call__(self, prompt, seed, size, refs=None):
         self.calls.append((seed, size))
         buf = io.BytesIO()
         Image.new("RGB", (8, 8), (seed, 0, 0)).save(buf, "JPEG")

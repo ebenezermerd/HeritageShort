@@ -62,3 +62,14 @@ def test_ten_shots_with_unique_ids():
     ids = validate.shot_ids(validate.load_storyboard())
     assert len(ids) == 10
     assert len(set(ids)) == 10
+
+
+def test_a_shot_may_only_use_a_declared_reference(tmp_path, monkeypatch):
+    import json as _json
+    from pipeline import common
+    sb = _json.loads((common.ROOT / "storyboard.json").read_text())
+    sb["shots"][0]["refs"] = ["nowhere"]
+    bad = tmp_path / "sb.json"
+    bad.write_text(_json.dumps(sb))
+    with pytest.raises(SystemExit, match="unknown reference 'nowhere'"):
+        validate.load_storyboard(bad)

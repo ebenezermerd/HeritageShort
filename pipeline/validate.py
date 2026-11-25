@@ -26,6 +26,10 @@ def load_storyboard(path: Path | None = None) -> dict:
         for cid in shot.get("characters", []):
             if cid not in known:
                 raise SystemExit(f"storyboard invalid:\n  shots/{i}/characters: unknown character '{cid}'")
+        refs = {r["id"] for r in data.get("references", [])}
+        for rid in shot.get("refs", []):
+            if rid not in refs:
+                raise SystemExit(f"storyboard invalid:\n  shots/{i}/refs: unknown reference '{rid}'")
     return data
 
 
