@@ -27,10 +27,9 @@ planner, the grader and the interview all read the same sentence.
 
 ## User test 1: the radio cut
 
-**Status: not run yet.** The cut exists (`outputs/radio_cut.mp4`, 62 s: narration
-on the film's real timing over a quiet pad, black screen). The voice in it is
-a local placeholder (macOS "Daniel"), not the final Gemini voice, because the
-Gemini free quota ran out (see `FAILURES.md` #4). Listeners: Tesfa, Beki and
+**Status: not run yet.** The cut is `outputs/radio_cut.mp4`, 62 s: the real Gemini narration on the
+film's real timing over the chosen ACE-Step score (E17), on a black screen. An earlier version used
+the macOS placeholder voice and a synthesised pad; this one replaces both. Listeners: Tesfa, Beki and
 Abeni's friend Amani.
 
 Questions to ask each person, and write their answers here in their own words:
