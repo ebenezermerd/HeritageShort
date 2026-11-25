@@ -109,3 +109,18 @@ dropped out of linear mode. I then tried `alimiter` at limit 0.5, 0.3 and 0.2 be
 harmless because platforms only turn loud files down. The final film measures -14.7 LUFS, true peak
 -1.4 dBFS, in both ratios. I could not reproduce the stall with synthetic test audio (FAILURES #7),
 so this one is backed by the measurements above, not by a failing test.
+
+## E09. How stable are the three brothers across seeds? (25 Nov)
+
+**Hypothesis.** Because each brother's look is written into the prompt, changing only the seed will
+change the composition but keep the three of them recognisably the same people.
+
+**Change.** Shot 8 (the three in the water), same prompt, four seeds: 108 (the one in the film), 208,
+308, 408. About 9 to 10 s each.
+
+**Result.** Half true. The composition changes completely every time. The oldest brother (tall, curly
+hair) is recognisable in all four. The two younger ones are not: their faces, their shorts (grey, blue,
+navy, green) and their apparent age change from seed to seed, and they still read as about 10 to 13
+even though the prompt says 16 and 17. So text alone holds one character well and two badly. That is
+the reason to test reference images (the likeness test, which needs both brothers' written photo
+consent first). Image: `outputs/experiments/e09_seeds.png`.
