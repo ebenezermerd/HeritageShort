@@ -181,5 +181,7 @@ the provenance block played as noise at the end.
 `repaired`), so no new requests were spent. The C2PA block is still inside each file, which is what the
 brief asks for. Each line got 0.16 s shorter. Three tests pin it.
 
+**Confirmed.** The author listened to the rebuilt preview and the "ksh" is gone.
+
 **Lesson.** My smoke test checked that the audio decoded, not what it contained. A provider changed its
 response format and the only detector was the author's ears.

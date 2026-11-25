@@ -14,6 +14,14 @@ PAD = (
 )
 
 
+def bed_input(total: float) -> list[str]:
+    """The chosen ACE-Step score if there is one, otherwise the quiet synthesised pad."""
+    score = common.ROOT / "outputs" / "music" / "score.wav"
+    if score.exists():
+        return ["-i", str(score)]
+    return ["-f", "lavfi", "-i", PAD.format(total=f"{total:.3f}")]
+
+
 def build(storyboard: dict, durations: dict[str, float], out: Path | None = None,
           voice: str = "gemini") -> Path:
     out = out or common.ROOT / "outputs" / "radio_cut.mp4"
@@ -23,12 +31,11 @@ def build(storyboard: dict, durations: dict[str, float], out: Path | None = None
     lines = [sid for sid in starts if sid in durations]
 
     cmd = ["ffmpeg", "-y", "-loglevel", "error",
-           "-f", "lavfi", "-i", f"color=c=black:s=1280x720:r=24:d={total:.3f}",
-           "-f", "lavfi", "-i", PAD.format(total=f"{total:.3f}")]
+           "-f", "lavfi", "-i", f"color=c=black:s=1280x720:r=24:d={total:.3f}", *bed_input(total)]
     for sid in lines:
         cmd += ["-i", str(narrate.audio_path(voice, sid))]
 
-    parts = ["[1:a]volume=0.5[pad]"]
+    parts = [f"[1:a]aresample=44100,volume=0.35,apad,atrim=0:{total:.3f}[pad]"]
     mix_inputs = ["[pad]"]
     for i, sid in enumerate(lines):
         delay_ms = int((starts[sid] + LEAD_S) * 1000)

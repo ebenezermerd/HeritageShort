@@ -55,3 +55,14 @@ def test_radio_cut_length_matches_timeline(narration_files):
 def test_radio_cut_has_black_video_and_audio(narration_files):
     out = radio_cut.build(SB, DUR)
     assert sorted(_streams(out)) == ["audio", "video"]
+
+
+def test_radio_cut_uses_the_chosen_score_when_there_is_one(tmp_path, monkeypatch):
+    # The synthesised pad was the hum the author found irritating; listeners should hear the real score.
+    from pipeline import common
+    monkeypatch.setattr(common, "ROOT", tmp_path)
+    assert radio_cut.bed_input(30.0)[:2] == ["-f", "lavfi"]
+    score = tmp_path / "outputs/music/score.wav"
+    score.parent.mkdir(parents=True)
+    score.write_bytes(b"RIFF")
+    assert radio_cut.bed_input(30.0) == ["-i", str(score)]
