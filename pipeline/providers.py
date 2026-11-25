@@ -52,6 +52,22 @@ def pcm_to_wav(pcm: bytes, rate: int = 24000) -> bytes:
     return buf.getvalue()
 
 
+def as_wav(data: bytes) -> bytes:
+    """Gemini TTS used to return raw PCM; it now returns a whole WAV with a C2PA provenance chunk.
+    Keep a WAV as it is (provenance intact) and wrap only raw PCM. FAILURES #11."""
+    if data[:4] == b"RIFF" and data[8:12] == b"WAVE":
+        return data
+    return pcm_to_wav(data)
+
+
+def unwrap_double_wav(data: bytes) -> bytes | None:
+    """If `data` is a WAV whose audio is itself a whole WAV file (the old bug), return the inner file."""
+    if data[:4] != b"RIFF" or data[36:40] != b"data" or data[44:48] != b"RIFF" or data[52:56] != b"WAVE":
+        return None
+    size = int.from_bytes(data[40:44], "little")
+    return data[44:44 + size]
+
+
 def tts_prompt(text: str, style: str) -> str:
     """The prompt sent to TTS. It is just the line: Gemini speaks or stretches any added
     instruction (experiment 1), so `style` is kept in the signature but not used."""
@@ -97,7 +113,7 @@ def gemini_tts(
     )
     r.raise_for_status()
     part = r.json()["candidates"][0]["content"]["parts"][0]["inlineData"]
-    return pcm_to_wav(base64.b64decode(part["data"]))
+    return as_wav(base64.b64decode(part["data"]))
 
 
 def schnell_payload(prompt: str, seed: int) -> dict:

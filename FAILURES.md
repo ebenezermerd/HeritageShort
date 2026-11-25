@@ -163,3 +163,23 @@ billing, as the brief said. The only free image route left was waiting for Cloud
 assembly cache key did not include the mix design, so the old film with the hiss was reused. The key now
 includes `MIX_VERSION`. Same lesson as the narration prompt in E03: the cache key must cover every
 decision that changes the output, including the code's own choices.
+
+## 11. The "ksh" at the end of every narration line was my bug, not the voice (25 Nov)
+
+**What broke.** The author heard a short "ksh" at the end of every narration line, in the film and in
+the separate clips. I had blamed my noise ambience (E18), but taking that out did not remove it.
+
+**What I found.** Measuring the last 600 ms of each clip: speech fades to about -65 dB, then a 150 ms
+burst at -6 to -10 dB, louder than the speech, identical in all nine clips. The raw bytes explained it.
+Gemini 3.8 Flash TTS now returns a complete WAV file (header, audio, then a C2PA provenance block signed
+by "Google Media Processing Services", tagged trainedAlgorithmicMedia). My code still assumed raw PCM
+and wrapped those bytes in a second WAV header, so the inner header played as a click at the start and
+the provenance block played as noise at the end.
+
+**What fixed it.** `providers.as_wav` keeps a WAV exactly as Gemini sent it and wraps only raw PCM.
+`python -m pipeline.narrate --repair` stripped the outer header from the nine saved clips (logged as
+`repaired`), so no new requests were spent. The C2PA block is still inside each file, which is what the
+brief asks for. Each line got 0.16 s shorter. Three tests pin it.
+
+**Lesson.** My smoke test checked that the audio decoded, not what it contained. A provider changed its
+response format and the only detector was the author's ears.

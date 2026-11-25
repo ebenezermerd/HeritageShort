@@ -139,3 +139,16 @@ def test_failed_shot_is_logged_each_attempt_and_reported(isolated_root):
     assert len(failed) == 3
     assert all(r["shot_id"] == "s02" and "503" in r["error"] for r in failed)
     assert (isolated_root / "outputs/narration/gemini/s01.wav").exists()
+
+
+def test_repair_unwraps_double_wrapped_clips_and_logs_it(isolated_root):
+    inner = providers.pcm_to_wav(b"\x03\x00" * 2400) + b""
+    d = isolated_root / "outputs/narration/gemini"
+    d.mkdir(parents=True)
+    (d / "s01.wav").write_bytes(providers.pcm_to_wav(inner))
+    (d / "s02.wav").write_bytes(inner)
+    fixed = narrate.repair("gemini")
+    assert fixed == ["s01"]
+    assert (d / "s01.wav").read_bytes() == inner
+    rows = [r for r in runs(isolated_root) if r["status"] == "repaired"]
+    assert [r["shot_id"] for r in rows] == ["s01"]

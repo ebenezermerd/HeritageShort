@@ -46,6 +46,22 @@ def import_audio(shot_id: str, text: str, src, voice: str = "gemini", note: str 
     return dest
 
 
+def repair(voice: str = "gemini") -> list[str]:
+    """Fix clips saved by the old bug: Gemini's own WAV wrapped in a second WAV header, so its
+    provenance block played as noise at the end of each line (FAILURES #11). No new requests."""
+    provider, model, _ = providers.VOICES[voice]
+    fixed = []
+    for path in sorted(audio_dir(voice).glob("*.wav")):
+        inner = providers.unwrap_double_wav(path.read_bytes())
+        if inner is None:
+            continue
+        path.write_bytes(inner)
+        fixed.append(path.stem)
+        log_run(STAGE, path.stem, provider, model, {"fix": "unwrap double WAV header"}, None, "", 0.0,
+                "repaired", error="removed the outer WAV header; Gemini's own WAV and its C2PA chunk kept")
+    return fixed
+
+
 def _generate(shot_id: str, text: str, h: str, tts: Callable[[str, str], bytes], sleep,
               provider: str, model: str, voice: str) -> bytes:
     params = {"voice": voice, "style": providers.DEFAULT_STYLE}
@@ -103,7 +119,12 @@ if __name__ == "__main__":
 
     ap = argparse.ArgumentParser()
     ap.add_argument("--voice", choices=sorted(providers.VOICES), default="gemini")
-    d = run(load_storyboard(), voice=ap.parse_args().voice)
+    ap.add_argument("--repair", action="store_true", help="unwrap clips saved with a double WAV header")
+    a = ap.parse_args()
+    if a.repair:
+        print("repaired:", narrate_fixed := repair(a.voice))
+        raise SystemExit
+    d = run(load_storyboard(), voice=a.voice)
     for k, v in d.items():
         print(f"{k}  {v:5.1f}s")
     print(f"total narration {sum(d.values()):.1f}s")
