@@ -74,6 +74,11 @@ final film's narration is generated with Gemini after the quota resets, which
 needs 9 of the 10 daily requests, so retakes are limited to one per day. That
 makes "change one narration line" a cheap, safe demo for the walkthrough.
 
+Shot 1's line, "Arba Minch means forty springs.", had already been made with Gemini during experiment E01
+(same voice, model and plain prompt), so I registered that clip with `narrate.import_audio`. It is
+logged as `imported` in `runs.jsonl`, not as a new request. The real run after the reset therefore needs
+8 requests, which leaves 2 retakes.
+
 ## 5. klein returned JPEG bytes and I saved them as .png (25 Nov)
 
 **What happened.** FFmpeg refused every keyframe: `Invalid PNG signature

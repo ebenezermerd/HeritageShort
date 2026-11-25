@@ -94,6 +94,27 @@ def test_each_voice_keeps_its_own_audio_and_never_overwrites_the_other(isolated_
     assert len(tts_gemini.calls) == 1  # still cached, no new Gemini request
 
 
+def test_imported_audio_counts_as_cached_and_is_logged_as_imported(isolated_root, tmp_path):
+    # A real Gemini clip made earlier for the same line, voice and prompt must not cost another request.
+    src = tmp_path / "sample.wav"
+    src.write_bytes(providers.pcm_to_wav(b"\x00\x00" * 24000))
+    narrate.import_audio("s01", "one", src, note="Gemini output from experiment E01")
+    tts = FakeTTS()
+    durations = narrate.run(sb("one", "two"), tts, sleep=lambda s: None, voice="gemini")
+    assert tts.calls == ["two"]
+    assert durations["s01"] == pytest.approx(1.0, abs=0.05)
+    row = [r for r in runs(isolated_root) if r["status"] == "imported"][0]
+    assert row["shot_id"] == "s01" and row["provider"] == "gemini"
+    assert "experiment E01" in row["error"]
+
+
+def test_import_rejects_a_file_that_does_not_decode(isolated_root, tmp_path):
+    bad = tmp_path / "bad.wav"
+    bad.write_bytes(b"not audio")
+    with pytest.raises(ValueError, match="does not decode"):
+        narrate.import_audio("s01", "one", bad)
+
+
 def test_silent_shot_gets_no_file_and_no_call(isolated_root):
     tts = FakeTTS()
     durations = narrate.run(sb("one", None), tts, sleep=lambda s: None)

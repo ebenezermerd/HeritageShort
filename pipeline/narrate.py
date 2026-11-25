@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import argparse
+import shutil
 import time
+from pathlib import Path
 from typing import Callable
 
 from pipeline import common, media, providers
@@ -18,6 +20,30 @@ def audio_dir(voice: str):
 
 def audio_path(voice: str, shot_id: str):
     return audio_dir(voice) / f"{shot_id}.wav"
+
+
+def _hash(text: str, voice: str) -> str:
+    provider, model, voice_name = providers.VOICES[voice]
+    return input_hash(providers.tts_prompt(text, providers.DEFAULT_STYLE), voice_name, model)
+
+
+def import_audio(shot_id: str, text: str, src, voice: str = "gemini", note: str = "") -> Path:
+    """Register an existing clip as this shot's narration, as if it had just been generated.
+
+    Only for audio made from exactly this prompt, voice and model (it is stored under that hash).
+    Logged as status "imported" so the record shows it was not a new request."""
+    src = Path(src)
+    if not media.decodes_fully(src):
+        raise ValueError(f"{src} does not decode")
+    provider, model, voice_name = providers.VOICES[voice]
+    h = _hash(text, voice)
+    dest = audio_path(voice, shot_id)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(src, dest)
+    Manifest(f"{STAGE}/{voice}").put(shot_id, h, str(dest.relative_to(common.ROOT)))
+    log_run(STAGE, shot_id, provider, model, {"voice": voice_name, "source": src.name}, None, h, 0.0,
+            "imported", error=note or "imported existing audio")
+    return dest
 
 
 def _generate(shot_id: str, text: str, h: str, tts: Callable[[str, str], bytes], sleep,
@@ -57,7 +83,7 @@ def run(storyboard: dict, tts: Callable[[str, str], bytes] | None = None,
         if not text:
             continue
         sid = shot["id"]
-        h = input_hash(providers.tts_prompt(text, providers.DEFAULT_STYLE), voice_name, model)
+        h = _hash(text, voice)
         path = out_dir / f"{sid}.wav"
         if not manifest.is_fresh(sid, h):
             try:
