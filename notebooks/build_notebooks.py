@@ -24,7 +24,7 @@ def save(name, cells):
     (HERE / f"{name}.ipynb").write_text(json.dumps(nb, indent=1))
 
 
-BUNDLE = 'BUNDLE = Path("/kaggle/input/heritage-short-bundle")  # the dataset made by `make kaggle-bundle`'
+BUNDLE = 'BUNDLE = next(p.parent for p in Path("/kaggle/input").rglob("storyboard.json"))  # the dataset from `make kaggle-bundle`, wherever Kaggle mounts it'
 
 # ---------------------------------------------------------------- 00 smoke
 save("00_smoke", [
@@ -49,7 +49,7 @@ from acestep.handler import AceStepHandler
 from acestep.llm_inference import LLMHandler
 from acestep.inference import GenerationParams, GenerationConfig, generate_music
 
-BUNDLE = Path("/kaggle/input/heritage-short-bundle")
+BUNDLE = next(p.parent for p in Path("/kaggle/input").rglob("storyboard.json"))  # the dataset from `make kaggle-bundle`, wherever Kaggle mounts it
 OUT = Path("/kaggle/working/music")
 OUT.mkdir(exist_ok=True)
 LOG = Path("/kaggle/working/notebook_log.jsonl")

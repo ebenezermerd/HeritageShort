@@ -27,7 +27,8 @@ Gemini speech calls (the daily quota, FAILURES #4) and 3 failed smoke calls.
 - **Cloudflare Workers AI:** 10,000 neurons a day free. klein costs 26.05 neurons per 512x512 output
   tile, and a 768x1344 image is about 3.9 tiles (my calculation), so about 100 neurons an image and
   roughly 97 images a day.
-- **Kaggle:** about 30 GPU hours a week per the brief. [The real number from Kaggle's sidebar goes here.]
+- **Kaggle:** 30 GPU hours a week, read from the notebook sidebar on 25 Nov ("Quota: 00:05 / 30 hrs"
+  after the smoke test). The smoke test saw two Tesla T4s with 15.6 GB each and 20.9 GB of free disk.
 
 ## List-price equivalent
 
