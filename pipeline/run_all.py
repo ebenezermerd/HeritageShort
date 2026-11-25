@@ -18,8 +18,13 @@ def restore_assets() -> None:
             continue
         dst.mkdir(parents=True, exist_ok=True)
         for f in src.iterdir():
-            if f.is_file() and not (dst / f.name).exists():
-                shutil.copyfile(f, dst / f.name)
+            if not f.is_file():
+                continue
+            # the chosen score goes where assembly reads it; everything else is a raw download
+            target = common.ROOT / "outputs" / "music" / "score.wav" if (sub, f.name) == ("music", "score.wav") \
+                else dst / f.name
+            if not target.exists():
+                shutil.copyfile(f, target)
 
 
 def pipeline(storyboard: dict, *, tts: Callable | None = None, gen: Callable | None = None,
@@ -39,7 +44,7 @@ def pipeline(storyboard: dict, *, tts: Callable | None = None, gen: Callable | N
     candidates = music.import_candidates()
     print(f"music: {len(candidates)} ACE-Step candidates found"
           + ("" if (common.ROOT / 'outputs/music/score.wav').exists() else "; no score chosen, assembly uses a pad"))
-    outputs = {r: timed(f"assemble {r}", lambda r=r: assemble.run(storyboard, durations, r))
+    outputs = {r: timed(f"assemble {r}", lambda r=r: assemble.run(storyboard, durations, r, voice))
                for r in storyboard["ratios"]}
     for name, secs in timings.items():
         print(f"  {name:<14} {secs:6.1f}s")

@@ -24,7 +24,9 @@ and write down in `FAILURES.md` whatever breaks.
    `music` block. Download `/kaggle/working/music/` into `outputs/music/raw/`.
 3. `20_wan.ipynb`: four clips (shots 1, 3, 6, 8), 480x832, 81 frames. It saves each
    clip as it finishes and skips ones already saved, so after a timeout just run it
-   again. Download `/kaggle/working/shots/` into `outputs/shots/raw/`.
+   again. Download `/kaggle/working/shots/` into `outputs/shots/raw/`, **including the small `.json`
+   file beside each clip**: it holds the job hash, and a clip without a matching hash is treated as
+   stale and replaced by a Ken Burns pass.
 4. Download `notebook_log.jsonl` each time and keep it in `outputs/kaggle_logs/`.
    Its seconds-per-clip numbers are the GPU minutes that go in `COSTS.md`.
 5. `30_likeness.ipynb` stays locked until `ETHICS.md` holds both brothers' exact

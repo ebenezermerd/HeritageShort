@@ -37,7 +37,7 @@ Abeni is the author and consents for himself.
 | FLUX.2 klein 4B (Cloudflare Workers AI) | keyframes | Apache 2.0 (open weights); Cloudflare's service terms apply |
 | FLUX.1 schnell (Cloudflare Workers AI) | comparison only | Apache 2.0 |
 | Gemini 3.8 Flash TTS | final narration | Google Gemini API terms (free tier) |
-| macOS `say` (voice Daniel) | placeholder narration, never in the final film | Apple system voice, local |
+| macOS `say` (voice Daniel) | placeholder narration only; it must not be used in the submitted film, and any build with it is named `*.say-placeholder.mp4` | Apple system voice, local |
 | Wan 2.2 TI2V-5B | moving shots | Apache 2.0 |
 | ACE-Step 1.5 | score | MIT; outputs usable commercially |
 | FFmpeg | assembly | LGPL/GPL build as installed |

@@ -17,7 +17,7 @@ version, "Say this calm, warm, unhurried, like a quiet storyteller: ...".
 not just different. On the 9.22 s clip `silencedetect` found speech until
 4.65 s, a 1.78 s gap, then more speech to the end, which fits the instruction
 being read out loud before the line. I have not listened to confirm that, so
-treat it as likely, not proven.
+treat it as likely, not proven. These three calls came from a throwaway script that did not write to `runs.jsonl`, so they are not in the log.
 
 **Decision.** Send the plain line only (`providers.tts_prompt`). The narration
 cache key now covers the exact prompt, so the old long audio could not be

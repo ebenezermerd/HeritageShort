@@ -91,3 +91,14 @@ def test_restore_assets_copies_only_missing_files(project):
     (project / "outputs/shots/raw/s02.mp4").write_bytes(b"newer download")
     run_all.restore_assets()
     assert (project / "outputs/shots/raw/s02.mp4").read_bytes() == b"newer download"
+
+
+def test_restore_assets_puts_the_chosen_score_where_assembly_reads_it(project):
+    # Review finding: a committed score was copied to raw/ but never to score.wav.
+    (project / "assets/music").mkdir(parents=True)
+    (project / "assets/music/score.wav").write_bytes(b"score")
+    (project / "assets/music/other.flac").write_bytes(b"candidate")
+    run_all.restore_assets()
+    assert (project / "outputs/music/score.wav").read_bytes() == b"score"
+    assert not (project / "outputs/music/raw/score.wav").exists()
+    assert (project / "outputs/music/raw/other.flac").exists()

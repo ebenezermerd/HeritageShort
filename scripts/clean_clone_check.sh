@@ -10,7 +10,10 @@ cp "$SRC/.env" "$TMP/repo/.env"
 cd "$TMP/repo"
 make setup
 make film VOICE="${VOICE:-say}"
-for f in outputs/final_9x16.mp4 outputs/final_16x9.mp4; do
+VOICE="${VOICE:-say}"
+SUFFIX=""
+[ "$VOICE" != "gemini" ] && SUFFIX=".${VOICE}-placeholder"
+for f in "outputs/final_9x16${SUFFIX}.mp4" "outputs/final_16x9${SUFFIX}.mp4"; do
   secs=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$f")
   awk -v s="$secs" -v f="$f" 'BEGIN { if (s < 60 || s > 90) { print f ": " s " s is outside 60-90"; exit 1 } else print f ": " s " s ok" }'
 done

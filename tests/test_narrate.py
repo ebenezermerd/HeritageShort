@@ -37,8 +37,8 @@ def runs(root):
 def test_one_file_per_narrated_shot(isolated_root):
     tts = FakeTTS()
     durations = narrate.run(sb("one", "two words"), tts, sleep=lambda s: None)
-    assert (isolated_root / "outputs/narration/s01.wav").exists()
-    assert (isolated_root / "outputs/narration/s02.wav").exists()
+    assert (isolated_root / "outputs/narration/gemini/s01.wav").exists()
+    assert (isolated_root / "outputs/narration/gemini/s02.wav").exists()
     assert durations["s01"] == pytest.approx(0.1 * 3, abs=0.01)
     assert durations["s02"] == pytest.approx(0.1 * 9, abs=0.01)
 
@@ -82,10 +82,22 @@ def test_switching_voice_regenerates_and_logs_the_real_provider(isolated_root):
     assert [r["provider"] for r in rows] == ["macos", "gemini"]
 
 
+def test_each_voice_keeps_its_own_audio_and_never_overwrites_the_other(isolated_root):
+    # Review finding: a placeholder run used to overwrite the real Gemini narration on disk.
+    tts_gemini, tts_say = FakeTTS(), FakeTTS()
+    narrate.run(sb("one"), tts_gemini, sleep=lambda s: None, voice="gemini")
+    gemini_bytes = (isolated_root / "outputs/narration/gemini/s01.wav").read_bytes()
+    narrate.run(sb("one"), tts_say, sleep=lambda s: None, voice="say")
+    assert (isolated_root / "outputs/narration/say/s01.wav").exists()
+    assert (isolated_root / "outputs/narration/gemini/s01.wav").read_bytes() == gemini_bytes
+    narrate.run(sb("one"), tts_gemini, sleep=lambda s: None, voice="gemini")
+    assert len(tts_gemini.calls) == 1  # still cached, no new Gemini request
+
+
 def test_silent_shot_gets_no_file_and_no_call(isolated_root):
     tts = FakeTTS()
     durations = narrate.run(sb("one", None), tts, sleep=lambda s: None)
-    assert not (isolated_root / "outputs/narration/s02.wav").exists()
+    assert not (isolated_root / "outputs/narration/gemini/s02.wav").exists()
     assert "s02" not in durations
     assert tts.calls == ["one"]
 
@@ -105,4 +117,4 @@ def test_failed_shot_is_logged_each_attempt_and_reported(isolated_root):
     failed = [r for r in runs(isolated_root) if r["status"] == "failed"]
     assert len(failed) == 3
     assert all(r["shot_id"] == "s02" and "503" in r["error"] for r in failed)
-    assert (isolated_root / "outputs/narration/s01.wav").exists()
+    assert (isolated_root / "outputs/narration/gemini/s01.wav").exists()

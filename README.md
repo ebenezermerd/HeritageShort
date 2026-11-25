@@ -22,11 +22,12 @@ CF_API_TOKEN=...       # a Cloudflare API token with Workers AI access
 ```bash
 make setup           # install Python 3.12 dependencies
 make film            # the whole film, both ratios, into outputs/
-make film VOICE=say  # same, with a local placeholder voice (macOS) if Gemini's free quota is spent
+make film VOICE=say  # placeholder voice (macOS) if Gemini's free quota is spent; output is named
+                     # final_9x16.say-placeholder.mp4 so it cannot pass for the real film
 make test            # the test suite
 ```
 
-`make film` writes `outputs/final_9x16.mp4` (the phone version) and `outputs/final_16x9.mp4`.
+`make film` writes `outputs/final_9x16.mp4` (the phone version) and `outputs/final_16x9.mp4`, made with the real Gemini voice. `make film VOICE=say` names its files `*.say-placeholder.mp4`.
 On a fresh clone with a placeholder voice it took about 4.8 minutes, almost all of it the 20 image
 calls (see `COSTS.md`). `scripts/clean_clone_check.sh` proves that: it clones, runs, and checks both
 files are 60 to 90 seconds.

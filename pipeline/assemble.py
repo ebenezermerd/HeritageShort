@@ -8,7 +8,7 @@ import subprocess
 import time
 from pathlib import Path
 
-from pipeline import captions, common, media, music, timeline
+from pipeline import captions, common, media, music, narrate, timeline
 from pipeline.common import Manifest, input_hash, log_run
 from pipeline.keyframes import ratio_dir
 from pipeline.radio_cut import LEAD_S
@@ -38,16 +38,23 @@ def _loudnorm_two_pass(src: Path, dst: Path) -> None:
     _ff("-i", str(src), "-af", f"{base}:{measured}", "-ar", "44100", "-ac", "2", str(dst))
 
 
-def run(storyboard: dict, durations: dict[str, float], ratio: str) -> Path:
+def final_name(ratio: str, voice: str) -> str:
+    """Only a build with the real Gemini voice gets the plain final_ name. Anything else is
+    labelled, so a placeholder-voice film cannot be mistaken for the real one."""
+    suffix = "" if voice == "gemini" else f".{voice}-placeholder"
+    return f"final_{ratio_dir(ratio)}{suffix}.mp4"
+
+
+def run(storyboard: dict, durations: dict[str, float], ratio: str, voice: str = "gemini") -> Path:
     rd, size = ratio_dir(ratio), FINAL_SIZES[ratio]
     root = common.ROOT
-    out = root / "outputs" / f"final_{rd}.mp4"
-    work = root / "outputs" / STAGE / rd
+    out = root / "outputs" / final_name(ratio, voice)
+    work = root / "outputs" / STAGE / rd / voice
     work.mkdir(parents=True, exist_ok=True)
 
     shots_list = storyboard["shots"]
     clips = [root / "outputs" / "shots" / rd / f"{s['id']}.mp4" for s in shots_list]
-    narr = {s["id"]: root / "outputs" / "narration" / f"{s['id']}.wav" for s in shots_list if s["id"] in durations}
+    narr = {s["id"]: narrate.audio_path(voice, s["id"]) for s in shots_list if s["id"] in durations}
     starts = timeline.shot_starts(storyboard, durations)
     card = storyboard["end_card"]
     total = timeline.total(storyboard, durations) + card["duration_s"]
@@ -55,11 +62,11 @@ def run(storyboard: dict, durations: dict[str, float], ratio: str) -> Path:
     score = root / "outputs" / "music" / "score.wav"
     score_fallback = not score.exists()
     h = input_hash(ratio, {k: round(v, 3) for k, v in durations.items()}, card,
-                   (DUCK, LIMITER, TARGET_LUFS, TRUE_PEAK, SCORE_GAIN),
+                   (DUCK, LIMITER, TARGET_LUFS, TRUE_PEAK, SCORE_GAIN, voice),
                    [s["narration"] for s in shots_list], *clips, *narr.values(),
                    "fallback" if score_fallback else score)
     manifest = Manifest(STAGE)
-    if manifest.is_fresh(ratio, h):
+    if manifest.is_fresh(f"{ratio}@{voice}", h):
         return out
 
     start_time = time.time()
@@ -116,17 +123,23 @@ def run(storyboard: dict, durations: dict[str, float], ratio: str) -> Path:
     # 4. mux
     _ff("-i", str(silent), "-i", str(normed), "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
         "-t", f"{total:.3f}", "-movflags", "+faststart", str(out))
-    log_run(STAGE, None, "ffmpeg", "ffmpeg", {"ratio": ratio, "lufs": TARGET_LUFS, "true_peak": TRUE_PEAK,
-                                              "duck": DUCK}, None, h, time.time() - start_time, "ok")
-    manifest.put(ratio, h, str(out.relative_to(root)))
+    log_run(STAGE, None, "ffmpeg", "ffmpeg", {"ratio": ratio, "voice": voice, "lufs": TARGET_LUFS,
+                                              "true_peak": TRUE_PEAK, "duck": DUCK},
+            None, h, time.time() - start_time, "ok")
+    manifest.put(f"{ratio}@{voice}", h, str(out.relative_to(root)))
     return out
 
 
 if __name__ == "__main__":
-    from pipeline import narrate
+    import argparse
+
+    from pipeline import providers
     from pipeline.validate import load_storyboard
 
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--voice", choices=sorted(providers.VOICES), default="gemini")
+    voice = ap.parse_args().voice
     sb = load_storyboard()
-    dur = narrate.run(sb, voice="say")
+    dur = narrate.run(sb, voice=voice)
     for r in sb["ratios"]:
-        print(run(sb, dur, r))
+        print(run(sb, dur, r, voice))

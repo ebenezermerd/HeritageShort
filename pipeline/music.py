@@ -24,7 +24,7 @@ def import_candidates(raw_dir: Path | None = None) -> list[Path]:
         if p.suffix.lower() not in AUDIO_SUFFIXES:
             continue
         try:
-            if media.duration(p) >= MIN_CANDIDATE_SECONDS:
+            if media.duration(p) >= MIN_CANDIDATE_SECONDS and media.decodes_fully(p):
                 good.append(p)
         except Exception:  # noqa: BLE001 - a truncated download is just not a candidate
             continue
@@ -55,6 +55,17 @@ def choose(index: int, reason: str) -> Path:
              f"**Result.** Chose {pick.name}. {reason}\n")
     exp.write_text(text.rstrip("\n") + "\n" + entry)
     return score
+
+
+if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) != 3:
+        raise SystemExit('usage: python -m pipeline.music <candidate number from 1> "why this one"')
+    cands = import_candidates()
+    for i, p in enumerate(cands, start=1):
+        print(f"{i}  {p.name}")
+    print(choose(int(sys.argv[1]) - 1, sys.argv[2]))
 
 
 def fallback_score(seconds: float, out: Path) -> Path:

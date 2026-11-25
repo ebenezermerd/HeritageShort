@@ -51,9 +51,27 @@ def _raw_dir() -> Path:
 
 
 def _valid_wan(path: Path) -> bool:
+    """Decodes cleanly to the end and is at least three seconds. Reading the header is not enough:
+    a clip cut short after an intact header still reports its full length."""
     try:
-        return path.exists() and media.duration(path) >= MIN_WAN_SECONDS
+        return path.exists() and media.duration(path) >= MIN_WAN_SECONDS and media.decodes_fully(path)
     except Exception:  # noqa: BLE001 - an unreadable or truncated download is simply not valid
+        return False
+
+
+def wan_job_hash(shot: dict) -> str:
+    """What a Wan clip was made from: the 9:16 keyframe, the motion prompt and the seed."""
+    frame = common.ROOT / "outputs" / "keyframes" / ratio_dir("9:16") / f"{shot['id']}.png"
+    return input_hash(frame, shot["motion"]["prompt"], shot["seed"])
+
+
+def _clip_matches_job(clip: Path, shot: dict) -> bool:
+    """The notebook writes <id>.json with the job hash beside each clip. A clip whose hash is
+    missing or different was made from an older keyframe, prompt or seed, so it is stale."""
+    sidecar = clip.with_suffix(".json")
+    try:
+        return json.loads(sidecar.read_text())["hash"] == wan_job_hash(shot)
+    except Exception:  # noqa: BLE001 - no readable sidecar means we cannot trust the clip
         return False
 
 
@@ -70,7 +88,7 @@ def export_wan_jobs(storyboard: dict) -> Path:
         shutil.copyfile(src, dst)
         jobs.append({"id": shot["id"], "keyframe": f"keyframes/{shot['id']}.png",
                      "prompt": shot["motion"]["prompt"], "seed": shot["seed"],
-                     "hash": input_hash(dst, shot["motion"]["prompt"], shot["seed"])})
+                     "hash": wan_job_hash(shot)})
     path = jobs_dir / "wan_jobs.json"
     path.write_text(json.dumps(jobs, indent=2))
     return path
@@ -94,7 +112,9 @@ def run(storyboard: dict, durations: dict[str, float]) -> dict[str, dict[str, Pa
             out = common.ROOT / "outputs" / STAGE / ratio_dir(ratio) / f"{sid}.mp4"
             clip = _raw_dir() / f"{sid}.mp4"
             wanted_wan = motion["mode"] == "wan" and ratio == "9:16"
-            use_wan = wanted_wan and _valid_wan(clip)
+            clip_ok = wanted_wan and _valid_wan(clip)
+            stale = clip_ok and not _clip_matches_job(clip, shot)
+            use_wan = clip_ok and not stale
             length = lengths[sid]
             h = input_hash(frame, motion["camera"], round(length, 3), ratio, clip if use_wan else "kenburns")
             key = f"{sid}@{ratio}"
@@ -108,7 +128,9 @@ def run(storyboard: dict, durations: dict[str, float]) -> dict[str, dict[str, Pa
                 log_run(STAGE, sid, "wan" if use_wan else "ffmpeg", "wan2.2-ti2v-5b" if use_wan else "zoompan",
                         {"ratio": ratio, "camera": motion["camera"], "seconds": round(length, 2)},
                         shot["seed"], h, time.time() - start, status,
-                        error="wan clip missing or invalid, used Ken Burns" if status == "fallback" else None)
+                        error=(("wan clip is stale: its job hash does not match the current keyframe, prompt "
+                                "and seed (or it has no hash); used Ken Burns") if stale
+                               else "wan clip missing or invalid, used Ken Burns") if status == "fallback" else None)
                 manifest.put(key, h, str(out.relative_to(common.ROOT)))
             result.setdefault(sid, {})[ratio] = out
     return result

@@ -55,7 +55,7 @@ retry text later and say here if it recovers.
 began returning `429 RESOURCE_EXHAUSTED`. I read the error body and it says it
 plainly: `generate_content_free_tier_requests, limit: 10, model:
 gemini-3.8-flash-tts`, "per day limit exceeded on Free Tier", retry in about 20
-hours. `runs.jsonl` shows 10 successful speech calls and 38 failed ones.
+hours. `runs.jsonl` shows 12 successful speech calls (10 narration and 2 smoke) and 38 failed narration calls. The three E01 experiment calls came from a throwaway script that did not log, so they are not in the file.
 
 **How I used it up.** Two smoke runs, the first nine-line narration pass, a prompt
 experiment (E01), and my own retries. A 2 s and 4 s backoff was far too short

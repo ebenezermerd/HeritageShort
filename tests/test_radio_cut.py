@@ -30,7 +30,7 @@ def test_total_adds_up():
 @pytest.fixture
 def narration_files(tmp_path, monkeypatch):
     monkeypatch.setattr(common, "ROOT", tmp_path)
-    d = tmp_path / "outputs" / "narration"
+    d = tmp_path / "outputs" / "narration" / "gemini"
     d.mkdir(parents=True)
     for sid, secs in DUR.items():
         (d / f"{sid}.wav").write_bytes(providers.pcm_to_wav(b"\x00\x00" * int(24000 * secs)))

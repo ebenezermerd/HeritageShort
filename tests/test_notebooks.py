@@ -53,3 +53,8 @@ def test_likeness_notebook_refuses_to_run_without_the_consent_flag():
 def test_no_secrets_in_notebooks(name):
     src = _source(_load(name))
     assert "AQ." not in src and "cfut_" not in src
+
+
+def test_wan_notebook_writes_the_job_hash_next_to_each_clip():
+    src = _source(_load("20_wan"))
+    assert 'json.dumps({"hash": job["hash"]})' in src

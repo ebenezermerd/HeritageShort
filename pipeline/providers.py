@@ -24,7 +24,7 @@ FLUX_KLEIN_4B = "@cf/black-forest-labs/flux-2-klein-4b"
 LOCAL_VOICE = "Daniel"
 
 # name -> (provider label for runs.jsonl, model, voice). "say" is a local placeholder that works
-# when Gemini's 10-requests-a-day free quota is spent; it never ships in the final film.
+# when Gemini's 10-requests-a-day free quota is spent; builds made with it are named *.say-placeholder.mp4 and must not be submitted.
 VOICES = {
     "gemini": ("gemini", GEMINI_TTS_MODEL, DEFAULT_VOICE),
     "say": ("macos", "say", LOCAL_VOICE),

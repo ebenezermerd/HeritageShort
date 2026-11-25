@@ -30,12 +30,13 @@ def project(tmp_path, monkeypatch):
             subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi",
                             "-i", f"testsrc2=s={w}x{h}:r=24:d={secs}", "-pix_fmt", "yuv420p",
                             str(d / f"{sid}.mp4")], check=True)
-    nd = tmp_path / "outputs" / "narration"
-    nd.mkdir(parents=True)
-    for sid, secs in DUR.items():
-        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi",
-                        "-i", f"sine=frequency=300:duration={secs}", "-ar", "24000", "-ac", "1",
-                        str(nd / f"{sid}.wav")], check=True)
+    for voice in ("gemini", "say"):
+        nd = tmp_path / "outputs" / "narration" / voice
+        nd.mkdir(parents=True)
+        for sid, secs in DUR.items():
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi",
+                            "-i", f"sine=frequency=300:duration={secs}", "-ar", "24000", "-ac", "1",
+                            str(nd / f"{sid}.wav")], check=True)
     return tmp_path
 
 
@@ -108,6 +109,16 @@ def test_missing_score_falls_back_and_is_logged_not_fatal(project):
     rows = [json.loads(x) for x in (project / "runs.jsonl").read_text().splitlines()]
     assert any(r["stage"] == "assemble" and r["status"] == "ok" for r in rows)
     assert any(r["stage"] == "music" and r["status"] == "fallback" for r in rows)
+
+
+def test_placeholder_voice_build_is_named_and_logged_as_a_placeholder(project):
+    # Review finding: a macOS-voice build used the same file name as the real film.
+    out = assemble.run(SB, DUR, "9:16", voice="say")
+    assert out.name == "final_9x16.say-placeholder.mp4"
+    assert not (project / "outputs/final_9x16.mp4").exists()
+    rows = [json.loads(x) for x in (project / "runs.jsonl").read_text().splitlines()]
+    built = [r for r in rows if r["stage"] == "assemble"]
+    assert built[-1]["params"]["voice"] == "say"
 
 
 def test_second_run_with_same_inputs_does_not_rebuild(project):

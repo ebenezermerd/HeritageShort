@@ -40,10 +40,13 @@ settings for the same reason.
 - **Fallbacks, never silent.** A `wan` shot with no valid clip becomes a Ken Burns shot and is logged
   `fallback`. A missing score becomes a synthesised pad, logged `fallback`. 16:9 never uses Wan clips
   (a deliberate GPU-quota trade-off, see `COSTS.md`).
-- **Validated imports.** A downloaded Wan clip or music file is checked with `ffprobe`; a truncated or
-  empty file is ignored, not used.
+- **Validated imports.** A downloaded Wan clip or music file is fully decoded with FFmpeg, not just read
+  from its header, because a file cut short after an intact header still reports its full length. A
+  truncated or empty file is ignored, not used. A Wan clip must also carry a job hash (a small `.json`
+  beside it) matching the current keyframe, prompt and seed, or it is treated as stale and replaced by
+  a Ken Burns pass.
 - **Quota.** Free tiers run out. The narration stage can switch to a clearly labelled local voice
-  (`--voice say`, logged as provider `macos`) so work continues; it is never the final voice.
+  (`--voice say`, logged as provider `macos`) so work continues; it must not be the submitted voice, so any build with it is named `final_*.say-placeholder.mp4` and `runs.jsonl` records the voice.
 - **Secrets.** Keys are read from a git-ignored `.env`. A missing key stops the stage with the name of
   the variable and writes nothing.
 

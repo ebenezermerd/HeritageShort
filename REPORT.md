@@ -24,7 +24,7 @@ section has nothing true to say, and the brief grades exactly this.]
 Gemini's free text-to-speech allows 10 requests a day per model. I did not know that, and I spent
 the whole allowance by early afternoon on two smoke tests, one nine-line narration pass, a prompt
 experiment and my own retries. After that every call returned `429 RESOURCE_EXHAUSTED`. `runs.jsonl`
-shows it plainly: 10 successful speech calls and 38 failed ones.
+shows it plainly: 12 successful speech calls (10 narration, 2 smoke) and 38 failed narration calls. My three prompt-experiment calls came from a throwaway script that did not log, so they are not in that count.
 
 I checked the error body, then tried the four other Gemini speech models on my key. They are in the
 model list but all returned 404, so there was no second voice to fall back on. What I did: kept the
@@ -36,7 +36,7 @@ and how it compares by ear with the placeholder.] The lesson is in `FAILURES.md`
 ## 4. A suggested practice that helped, and one that did not
 
 **Helped: log every call.** My instinct was to log errors only. Logging every call, with model,
-parameters, seed and latency, is what let me count 10 successes against 38 failures, see that image
+parameters, seed and latency, is what let me count the successes against 38 failures, see that image
 generation averaged 8.9 s, and fill in `COSTS.md` from data instead of guesses.
 
 **Did not help (here): one narration file per line.** It makes a retake cheap in time, and it let me

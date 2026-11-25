@@ -11,6 +11,15 @@ from pipeline.common import Manifest, input_hash, log_run, with_retries
 STAGE = "narration"
 
 
+def audio_dir(voice: str):
+    """Each voice has its own folder, so a placeholder run can never overwrite real Gemini audio."""
+    return common.ROOT / "outputs" / STAGE / voice
+
+
+def audio_path(voice: str, shot_id: str):
+    return audio_dir(voice) / f"{shot_id}.wav"
+
+
 def _generate(shot_id: str, text: str, h: str, tts: Callable[[str, str], bytes], sleep,
               provider: str, model: str, voice: str) -> bytes:
     params = {"voice": voice, "style": providers.DEFAULT_STYLE}
@@ -38,8 +47,8 @@ def run(storyboard: dict, tts: Callable[[str, str], bytes] | None = None,
     provider, model, voice_name = providers.VOICES[voice]
     if tts is None:
         tts = providers.gemini_tts if voice == "gemini" else providers.say_tts
-    manifest = Manifest(STAGE)
-    out_dir = common.ROOT / "outputs" / STAGE
+    manifest = Manifest(f"{STAGE}/{voice}")
+    out_dir = audio_dir(voice)
     out_dir.mkdir(parents=True, exist_ok=True)
     durations: dict[str, float] = {}
     failed: list[str] = []

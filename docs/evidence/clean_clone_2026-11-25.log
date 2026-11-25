@@ -1,0 +1,37 @@
+uv sync
+Using CPython 3.12.13 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtual environment at: .venv
+Resolved 20 packages in 1ms
+Installed 18 packages in 26ms
+ + attrs==26.1.0
+ + certifi==2026.11.20
+ + charset-normalizer==3.5.3
+ + idna==3.20
+ + iniconfig==2.3.1
+ + jsonschema==4.26.0
+ + jsonschema-specifications==2025.9.1
+ + packaging==26.4
+ + pillow==13.0.0
+ + pluggy==1.7.0
+ + pygments==2.21.0
+ + pytest==9.2.0
+ + python-dotenv==1.2.4
+ + referencing==0.37.0
+ + requests==2.34.2
+ + rpds-py==2026.9.1
+ + typing-extensions==4.16.0
+ + urllib3==2.8.0
+uv run python -m pipeline.validate
+storyboard ok
+uv run python -m pipeline.run_all --voice say
+music: 0 ACE-Step candidates found; no score chosen, assembly uses a pad
+  narration         9.3s
+  keyframes       192.5s
+  shots            21.2s
+  assemble 9:16    31.5s
+  assemble 16:9    33.8s
+9:16: /private/var/folders/1k/sgvh3mgn3t9br69rgwtkdslm0000gp/T/tmp.L1iUBwAxZ7/repo/outputs/final_9x16.mp4
+16:9: /private/var/folders/1k/sgvh3mgn3t9br69rgwtkdslm0000gp/T/tmp.L1iUBwAxZ7/repo/outputs/final_16x9.mp4
+outputs/final_9x16.mp4: 65.000000 s ok
+outputs/final_16x9.mp4: 65.000000 s ok
+clean clone OK in /var/folders/1k/sgvh3mgn3t9br69rgwtkdslm0000gp/T/tmp.L1iUBwAxZ7/repo

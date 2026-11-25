@@ -4,7 +4,7 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from pipeline import common, timeline
+from pipeline import common, narrate, timeline
 
 LEAD_S = 0.3  # a line starts a moment after its shot begins
 
@@ -14,7 +14,8 @@ PAD = (
 )
 
 
-def build(storyboard: dict, durations: dict[str, float], out: Path | None = None) -> Path:
+def build(storyboard: dict, durations: dict[str, float], out: Path | None = None,
+          voice: str = "gemini") -> Path:
     out = out or common.ROOT / "outputs" / "radio_cut.mp4"
     out.parent.mkdir(parents=True, exist_ok=True)
     starts = timeline.shot_starts(storyboard, durations)
@@ -25,7 +26,7 @@ def build(storyboard: dict, durations: dict[str, float], out: Path | None = None
            "-f", "lavfi", "-i", f"color=c=black:s=1280x720:r=24:d={total:.3f}",
            "-f", "lavfi", "-i", PAD.format(total=f"{total:.3f}")]
     for sid in lines:
-        cmd += ["-i", str(common.ROOT / "outputs" / "narration" / f"{sid}.wav")]
+        cmd += ["-i", str(narrate.audio_path(voice, sid))]
 
     parts = ["[1:a]volume=0.5[pad]"]
     mix_inputs = ["[pad]"]
@@ -44,10 +45,11 @@ def build(storyboard: dict, durations: dict[str, float], out: Path | None = None
 if __name__ == "__main__":
     import argparse
 
-    from pipeline import narrate, providers
+    from pipeline import providers
     from pipeline.validate import load_storyboard
 
     ap = argparse.ArgumentParser()
     ap.add_argument("--voice", choices=sorted(providers.VOICES), default="gemini")
+    voice = ap.parse_args().voice
     sb = load_storyboard()
-    print(build(sb, narrate.run(sb, voice=ap.parse_args().voice)))
+    print(build(sb, narrate.run(sb, voice=voice), voice=voice))

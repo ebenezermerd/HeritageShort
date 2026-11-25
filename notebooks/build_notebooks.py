@@ -136,6 +136,8 @@ for job in jobs:
                   num_frames=81, guidance_scale=5.0, num_inference_steps=30,
                   generator=torch.Generator("cpu").manual_seed(job["seed"])).frames[0]
     export_to_video(frames, str(out), fps=24)
+    # the job hash lets the pipeline tell a stale clip (older keyframe, prompt or seed) from a current one
+    (OUT / f"{{job['id']}}.json").write_text(json.dumps({{"hash": job["hash"]}}))
     seconds = time.time() - start
     with LOG.open("a") as f:
         f.write(json.dumps({{"stage": "shots", "model": MODEL, "shot_id": job["id"], "seconds": round(seconds, 1),

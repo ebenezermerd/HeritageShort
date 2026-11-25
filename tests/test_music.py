@@ -55,3 +55,11 @@ def test_choose_with_no_candidates_says_so(isolated_root):
 def test_fallback_score_has_requested_duration(isolated_root):
     out = music.fallback_score(12.0, isolated_root / "outputs/music/fallback.wav")
     assert media.duration(out) == pytest.approx(12.0, abs=0.2)
+
+
+def test_flac_cut_short_after_an_intact_header_is_rejected(isolated_root):
+    raw = isolated_root / "outputs/music/raw"
+    tone(raw / "a.flac", 20)
+    data = (raw / "a.flac").read_bytes()
+    (raw / "a.flac").write_bytes(data[: len(data) // 4])
+    assert music.import_candidates() == []
