@@ -48,3 +48,47 @@ worked every time (about 4.3 s).
 storyboard is written by hand against the schema), so I did not block on it.
 Speech is the Gemini feature the film depends on and it is healthy. I will
 retry text later and say here if it recovers.
+
+## 4. Gemini's free speech quota is 10 requests a day, and I spent it (25 Nov)
+
+**What happened.** About a dozen narration calls into the afternoon every call
+began returning `429 RESOURCE_EXHAUSTED`. I read the error body and it says it
+plainly: `generate_content_free_tier_requests, limit: 10, model:
+gemini-3.8-flash-tts`, "per day limit exceeded on Free Tier", retry in about 20
+hours. `runs.jsonl` shows 10 successful speech calls and 38 failed ones.
+
+**How I used it up.** Two smoke runs, the first nine-line narration pass, a prompt
+experiment (E01), and my own retries. A 2 s and 4 s backoff was far too short
+for a limit that resets daily, and I raised it to 15 s and 30 s, but that only
+helps with per-minute limits.
+
+**What I tried.** Other speech models on the same key: `gemini-3.8-flash-lite-tts`,
+`gemini-3.1-flash-tts-preview`, `gemini-2.5-flash-preview-tts` and
+`gemini-2.5-pro-preview-tts` all appear in the model list and all return 404 for
+`generateContent`. So there is no second Gemini voice to fall back to.
+
+**What I did.** Added a local placeholder voice (macOS `say`, "Daniel") behind the
+same interface (`narrate.py --voice say`), logged as provider `macos` so it can
+never pass for Gemini. The radio cut for the first user test uses it. The
+final film's narration is generated with Gemini after the quota resets, which
+needs 9 of the 10 daily requests, so retakes are limited to one per day. That
+makes "change one narration line" a cheap, safe demo for the walkthrough.
+
+## 5. klein returned JPEG bytes and I saved them as .png (25 Nov)
+
+**What happened.** FFmpeg refused every keyframe: `Invalid PNG signature
+0xFFD8FFE000104A46`. `FF D8` is the JPEG signature. Cloudflare's FLUX.2 klein
+answers with JPEG data while I had named the files `.png`.
+
+**What fixed it.** A test that checks the saved file really starts with the PNG
+signature (it failed first), then `to_png()` in `keyframes.py` re-saves through
+Pillow. The 20 images already on disk were converted in place so no free image
+quota was spent again.
+
+## 6. My own scripts cost me time twice (25 Nov)
+
+- The first TTS experiment script patched the very function one of its variants
+  called, and died with a `RecursionError` after a long rate-limit wait.
+- `radio_cut`'s `main` asked for the Gemini voice while the quota was gone. It
+  sat in 15 s and 30 s retry waits for eight shots until I stopped it. It now
+  takes `--voice`, and I now check the quota before long runs.

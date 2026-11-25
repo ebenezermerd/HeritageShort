@@ -3,7 +3,10 @@ from __future__ import annotations
 
 import base64
 import io
+import subprocess
+import tempfile
 import wave
+from pathlib import Path
 
 import requests
 
@@ -18,6 +21,26 @@ FLUX_SCHNELL = "@cf/black-forest-labs/flux-1-schnell"
 FLUX_KLEIN_4B = "@cf/black-forest-labs/flux-2-klein-4b"
 
 
+LOCAL_VOICE = "Daniel"
+
+# name -> (provider label for runs.jsonl, model, voice). "say" is a local placeholder that works
+# when Gemini's 10-requests-a-day free quota is spent; it never ships in the final film.
+VOICES = {
+    "gemini": ("gemini", GEMINI_TTS_MODEL, DEFAULT_VOICE),
+    "say": ("macos", "say", LOCAL_VOICE),
+}
+
+
+def say_tts(text: str, style: str = "") -> bytes:
+    """Placeholder narration from the macOS `say` command, as a 24 kHz mono WAV."""
+    with tempfile.TemporaryDirectory() as d:
+        aiff, wav = Path(d) / "line.aiff", Path(d) / "line.wav"
+        subprocess.run(["say", "-v", LOCAL_VOICE, "-r", "165", "-o", str(aiff), text], check=True)
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(aiff), "-ar", "24000", "-ac", "1",
+                        str(wav)], check=True)
+        return wav.read_bytes()
+
+
 def pcm_to_wav(pcm: bytes, rate: int = 24000) -> bytes:
     """Wrap raw 16-bit mono PCM (what Gemini TTS returns) in a WAV container."""
     buf = io.BytesIO()
@@ -30,7 +53,9 @@ def pcm_to_wav(pcm: bytes, rate: int = 24000) -> bytes:
 
 
 def tts_prompt(text: str, style: str) -> str:
-    return f"Say this {style}, like a quiet storyteller: {text}"
+    """The prompt sent to TTS. It is just the line: Gemini speaks or stretches any added
+    instruction (experiment 1), so `style` is kept in the signature but not used."""
+    return text
 
 
 def decode_image_response(payload: dict) -> bytes:

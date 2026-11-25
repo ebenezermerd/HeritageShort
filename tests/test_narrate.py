@@ -63,6 +63,25 @@ def test_changing_one_line_regenerates_only_that_shot(isolated_root):
     assert new[0]["shot_id"] == "s02" and new[0]["status"] == "ok"
 
 
+def test_changing_the_prompt_format_invalidates_cached_audio(monkeypatch):
+    tts = FakeTTS()
+    narrate.run(sb("one", "two"), tts, sleep=lambda s: None)
+    n = len(tts.calls)
+    monkeypatch.setattr(providers, "tts_prompt", lambda text, style: f"Say softly: {text}")
+    narrate.run(sb("one", "two"), tts, sleep=lambda s: None)
+    assert len(tts.calls) - n == 2
+
+
+def test_switching_voice_regenerates_and_logs_the_real_provider(isolated_root):
+    tts = FakeTTS()
+    narrate.run(sb("one"), tts, sleep=lambda s: None, voice="say")
+    n = len(tts.calls)
+    narrate.run(sb("one"), tts, sleep=lambda s: None, voice="gemini")
+    assert len(tts.calls) - n == 1
+    rows = runs(isolated_root)
+    assert [r["provider"] for r in rows] == ["macos", "gemini"]
+
+
 def test_silent_shot_gets_no_file_and_no_call(isolated_root):
     tts = FakeTTS()
     durations = narrate.run(sb("one", None), tts, sleep=lambda s: None)
