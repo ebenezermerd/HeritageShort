@@ -177,3 +177,55 @@ model produced a near-photographic image of a young man jumping into a turquoise
 different look from every other shot. The style block is what makes the film painted and consistent,
 and it also keeps the brothers from being rendered as photoreal people, which fits what I decided in
 `ETHICS.md`. Image: `outputs/experiments/e13_compare.png`.
+
+## E14. Does the same seed give the same image on Cloudflare klein? (25 Nov)
+
+**Hypothesis.** The brief says a fixed seed makes two runs comparable, and my cache key includes the
+seed, so the same prompt and seed should give the same picture.
+
+**Change.** The same prompt and seed 7, twice, at 512x512, plus seed 8 once.
+
+**Result.** The two seed-7 files differed (different MD5), so klein through this API does not
+reproduce an image from a seed. That is a correction to my own earlier work: the "same seed"
+comparisons in E05 and E13 compared prompts under a different random start each time, so their
+conclusions are looser than I wrote. The cache is still correct (it skips a call whose inputs have
+not changed, and the saved file is the picture), but a seed cannot recreate a picture. The keyframe I
+keep is the file in `outputs/`, not a seed.
+
+## E15. Pick the cleanest of three candidates per shot (25 Nov)
+
+**Hypothesis.** One image per shot hides klein's weak spots (extra limbs, pale skin, merged hands).
+Three candidates per shot, judged by eye, should leave a clean one for every shot, which a single
+generation did not.
+
+**Change.** New stage `pipeline/candidates.py`: 3 candidates per shot at 9:16 (30 calls, mean 9.1 s).
+Before generating I also tightened four prompts: "exactly two arms and two hands each" in the style
+block; shot 6 now names Tesfa and "warm brown skin, bare chest"; shot 7 asks for "one single pair" of
+cupped hands; shot 8 asks for the same warm brown skin on all three and arms down in the water.
+I looked at all 30 and kept one per shot.
+
+**Result.** The first-pass pictures had real faults: shot 7 showed two pairs of hands (four hands),
+shot 6 showed a pale boy in a white shirt, and shot 8 gave the three boys different skin tones. In
+the candidates, shot 7's first option still showed an extra hand, and several others had odd arms or hands
+(I did not count them). Each shot had at least one
+clean option, and the brothers' ages now read differently (shot 8 has the tall oldest brother). The
+catch from E14: because a seed cannot recreate an image, `candidates.pick` copies the chosen file
+into place and records it in the manifest, and the storyboard seed names which candidate it was.
+The 16:9 images were generated once each and I checked them by eye; I saw no extra limbs.
+
+## E16. Remove the hum and add ambience and splashes (25 Nov)
+
+**Hypothesis.** The author found the sound "irritating" and said they could hear nothing of the
+place. The only music in the build was my synthesised 110 Hz pad, so removing it and adding water,
+birds and splash effects from FFmpeg should fix both complaints.
+
+**Change.** `pipeline/ambience.py` builds a pink-noise water bed, two bird chirp patterns and a
+splash for each `sfx` cue in `storyboard.json` (shots 3 to 8, 8 cues). Without an ACE-Step score the
+music bed is left out. The ambience is ducked under the narration like the score.
+
+**Result.** Measured, not heard (I cannot listen): a splash cue lifts the level at its moment by more
+than 3 dB over the bed (a test pins it), and the films stay 65.0 s. Loudness first landed at a
+true peak of +0.1 dBFS after AAC encoding even though the WAV was at -1.5: the white-noise splashes
+make the encoder overshoot by 1.6 dB. Setting loudnorm's ceiling to -3 dB gives -14.6 LUFS and
+-1.5 dBFS in the final MP4 for both ratios. Whether it sounds better is for the author's ears; the
+music will only be right once an ACE-Step track replaces the empty music bed.

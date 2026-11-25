@@ -8,6 +8,7 @@ price" is what the same work would cost at published rates, looked up on 25 Nov 
 | Stage | Provider / model | Calls | Mean | Total |
 |---|---|---|---|---|
 | Keyframes | Cloudflare, FLUX.2 klein 4B, 768x1344 or 1344x768 | 38 | 8.9 s | 339 s |
+| Candidates | Cloudflare, FLUX.2 klein 4B, 768x1344 | 30 | 9.1 s | 273 s |
 | Narration (Gemini) | Gemini 3.8 Flash TTS | 10 successful (plus 2 in smoke tests) | 4.2 s | 42 s |
 | Narration (placeholder) | macOS `say`, voice Daniel | 9 | 0.85 s | 8 s |
 | Moving shots | FFmpeg `zoompan` | 20 | 0.8 s | 16 s |

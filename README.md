@@ -39,6 +39,8 @@ files are 60 to 90 seconds.
 | contract | `pipeline/validate.py` | checks `storyboard.json` against `schema/storyboard.schema.json` |
 | narration | `pipeline/narrate.py` | one voice file per line (Gemini TTS) |
 | keyframes | `pipeline/keyframes.py` | one painted still per shot per ratio (FLUX.2 klein 4B on Cloudflare) |
+| candidates | `pipeline/candidates.py` | three options per shot to pick the cleanest from (`make candidates`) |
+| ambience | `pipeline/ambience.py` | water, birds and splash effects from FFmpeg, cued in `storyboard.json` |
 | moving shots | `pipeline/shots.py` | Ken Burns by default, Wan 2.2 clips where you downloaded them |
 | music | `pipeline/music.py` | imports ACE-Step candidates, records which one you chose and why |
 | assembly | `pipeline/assemble.py` | cut, captions, ducking, loudness, end card, both ratios |

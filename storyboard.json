@@ -4,7 +4,7 @@
     "9:16",
     "16:9"
   ],
-  "style_block": "warm hand-painted look, soft paper grain, dappled green and turquoise light, clear spring water, tall trees, red-brown earth bank, gentle watercolour edges",
+  "style_block": "warm hand-painted look, soft paper grain, dappled green and turquoise light, clear spring water, tall trees, red-brown earth bank, gentle watercolour edges, anatomically correct people with exactly two arms and two hands each",
   "characters": [
     {
       "id": "beki",
@@ -45,7 +45,7 @@
       "reason": "Meet the three brothers without needing faces, and say how old they were.",
       "narration": "We only ever needed one. I was sixteen, Tesfa was seventeen, Beki was nineteen.",
       "image_prompt": "Three teenage brothers walking side by side toward a forest spring, seen from behind, towels over their shoulders, the tallest on the left and the smallest on the right, dappled light",
-      "seed": 102,
+      "seed": 103,
       "duration_s": 7,
       "motion": {
         "mode": "kenburns",
@@ -63,7 +63,7 @@
       "reason": "The oldest goes first: Beki's jump starts the day.",
       "narration": "Beki, the oldest, always jumped first.",
       "image_prompt": "The tallest teenage boy mid-air jumping from the bank into a turquoise spring, seen from behind, arms out wide, water waiting below",
-      "seed": 103,
+      "seed": 104,
       "duration_s": 6,
       "motion": {
         "mode": "wan",
@@ -72,6 +72,12 @@
       },
       "characters": [
         "beki"
+      ],
+      "sfx": [
+        {
+          "type": "splash",
+          "at_s": 1.6
+        }
       ]
     },
     {
@@ -88,6 +94,12 @@
       },
       "characters": [
         "tesfa"
+      ],
+      "sfx": [
+        {
+          "type": "splash",
+          "at_s": 1.4
+        }
       ]
     },
     {
@@ -95,7 +107,7 @@
       "reason": "The youngest goes last: Abeni hesitates at the edge, then leaps.",
       "narration": "And me, last.",
       "image_prompt": "The smallest teenage boy standing at the edge of the bank, leaning forward about to jump, seen from behind at a distance, turquoise water ahead",
-      "seed": 105,
+      "seed": 107,
       "duration_s": 5,
       "motion": {
         "mode": "kenburns",
@@ -104,42 +116,66 @@
       },
       "characters": [
         "abeni"
+      ],
+      "sfx": [
+        {
+          "type": "splash",
+          "at_s": 2.0
+        }
       ]
     },
     {
       "id": "s06",
       "reason": "The tricks from the tree: the acrobatics Abeni remembers.",
       "narration": "Then it was flips off the tree, and whatever tricks we could think of.",
-      "image_prompt": "A teenage boy with warm brown skin doing a flip from a tree branch over the spring, silhouetted against bright green leaves, water drops in the air",
-      "seed": 106,
+      "image_prompt": "A teenage boy with warm brown skin and bare chest in dark swim shorts doing a flip from a tree branch over the spring, small in the frame and silhouetted against bright green leaves, water drops in the air",
+      "seed": 107,
       "duration_s": 7,
       "motion": {
         "mode": "wan",
         "camera": "pan_right",
         "prompt": "the boy flips off the branch toward the water, camera steady"
       },
-      "characters": []
+      "characters": [
+        "tesfa"
+      ],
+      "sfx": [
+        {
+          "type": "splash",
+          "at_s": 1.8
+        }
+      ]
     },
     {
       "id": "s07",
       "reason": "A close detail of the splashing, to show the joy without a face.",
       "narration": "And splashing.",
-      "image_prompt": "Close detail of a teenage boy's warm brown hands throwing water, bright drops frozen in the air above the turquoise spring, soft blurred trees behind",
-      "seed": 107,
+      "image_prompt": "Close detail of one single pair of warm brown cupped hands scooping up turquoise spring water, bright drops frozen in the air, only two hands in the picture, soft blurred trees behind",
+      "seed": 108,
       "duration_s": 5,
       "motion": {
         "mode": "kenburns",
         "camera": "pull_out",
         "prompt": "slow pull out from the splash"
       },
-      "characters": []
+      "characters": [],
+      "sfx": [
+        {
+          "type": "splash",
+          "at_s": 0.9
+        },
+        {
+          "type": "splash",
+          "at_s": 1.8
+        }
+      ]
     },
     {
       "id": "s08",
       "reason": "The core feeling: all three together, shouting and laughing.",
       "narration": "And all of us shouting. Whoa, whoa, whoa.",
-      "image_prompt": "Three teenage brothers in chest-deep turquoise water, mouths open shouting and laughing, splashing each other, faces small and softly lit",
-      "seed": 108,
+      "image_prompt": "Three teenage brothers all with the same warm brown skin standing chest-deep in turquoise water, mouths open shouting and laughing, arms down in the water, faces small and softly lit, seen from a distance",
+      "seed": 110,
       "duration_s": 7,
       "motion": {
         "mode": "wan",
@@ -150,6 +186,16 @@
         "beki",
         "tesfa",
         "abeni"
+      ],
+      "sfx": [
+        {
+          "type": "splash",
+          "at_s": 0.8
+        },
+        {
+          "type": "splash",
+          "at_s": 2.2
+        }
       ]
     },
     {
@@ -171,7 +217,7 @@
       "reason": "Closing image: the three sitting together, no words needed.",
       "narration": null,
       "image_prompt": "Three teenage brothers sitting side by side on the bank with their feet in the water, seen from behind, warm evening light",
-      "seed": 110,
+      "seed": 111,
       "duration_s": 6,
       "motion": {
         "mode": "kenburns",

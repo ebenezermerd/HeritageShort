@@ -46,6 +46,18 @@
           },
           "image_prompt": { "type": "string", "pattern": "\\S" },
           "characters": { "type": "array", "items": { "type": "string" } },
+          "sfx": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["type", "at_s"],
+              "additionalProperties": false,
+              "properties": {
+                "type": { "enum": ["splash"] },
+                "at_s": { "type": "number", "minimum": 0 }
+              }
+            }
+          },
           "seed": { "type": "integer", "minimum": 0 },
           "duration_s": { "type": "number", "minimum": 3, "maximum": 12 },
           "motion": {

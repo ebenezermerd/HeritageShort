@@ -1,4 +1,4 @@
-.PHONY: setup test validate film clean kaggle-bundle choose-music save-assets
+.PHONY: candidates setup test validate film clean kaggle-bundle choose-music save-assets
 
 kaggle-bundle: validate
 	uv run python -m pipeline.shots
@@ -19,6 +19,9 @@ validate:
 	uv run python -m pipeline.validate
 
 VOICE ?= gemini
+
+candidates: validate
+	uv run python -m pipeline.candidates -n 3
 
 film: validate
 	uv run python -m pipeline.run_all --voice $(VOICE)

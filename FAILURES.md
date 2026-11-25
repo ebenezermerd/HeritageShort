@@ -112,3 +112,20 @@ loudnorm's own measurement of the real mix: loudness range 17.2 LU against a tar
 comparison (E08). The assembly cache key now includes the audio settings, so changing them cannot
 be skipped by a stale cache. The honest gap: I have no failing test that reproduces this; the evidence
 is the measurements in `EXPERIMENTS.md` E06 to E08.
+
+## 8. The first keyframes were not checked, and the seed did not do what I assumed (25 Nov)
+
+**What broke.** The author reviewed the film and found the images "awful", with people who "have like
+four hands sometimes". I had generated one image per shot and never looked closely at hands or faces,
+although the brief says to check them before spending GPU time. Shot 7 showed four hands, shot 6 a
+pale boy in a white shirt, shot 8 three different skin tones.
+
+**What I tried.** Regenerate with new seeds. When the picked 9:16 image came back different on the
+rebuild, I tested the seed directly and found klein does not reproduce an image from the same seed
+(E14).
+
+**What fixed it.** Three candidates per shot, judged by eye (E15), and a `pick` step that keeps the
+chosen file instead of trusting the seed.
+
+**What I would do differently.** Look at every image the moment it is made, and treat "same seed" as a
+claim to test rather than a fact. It also means the Wan clips will animate clean pictures.

@@ -8,7 +8,7 @@ import subprocess
 import time
 from pathlib import Path
 
-from pipeline import captions, common, media, music, narrate, timeline
+from pipeline import ambience, captions, common, media, music, narrate, timeline
 from pipeline.common import Manifest, input_hash, log_run
 from pipeline.keyframes import ratio_dir
 from pipeline.radio_cut import LEAD_S
@@ -16,8 +16,9 @@ from pipeline.shots import FINAL_SIZES, FPS
 
 STAGE = "assemble"
 TARGET_LUFS = -14
-TRUE_PEAK = -1.5  # a little under the -1 dB ceiling so AAC encoding cannot push it over
+TRUE_PEAK = -3.0  # AAC encoding of the splash noise overshot a -1.5 dB ceiling by 1.6 dB (E15)
 SCORE_GAIN = 0.6
+AMBIENCE_GAIN = 0.8
 DUCK = "threshold=0.02:ratio=6:attack=300:release=1500"
 # Peak limiter ahead of loudnorm. Sparse speech has a very wide loudness range, so without it loudnorm
 # fell back to "dynamic" mode and stalled near -15.5 LUFS (experiment E08). 0.3 reached -14.7.
@@ -62,7 +63,8 @@ def run(storyboard: dict, durations: dict[str, float], ratio: str, voice: str = 
     score = root / "outputs" / "music" / "score.wav"
     score_fallback = not score.exists()
     h = input_hash(ratio, {k: round(v, 3) for k, v in durations.items()}, card,
-                   (DUCK, LIMITER, TARGET_LUFS, TRUE_PEAK, SCORE_GAIN, voice),
+                   (DUCK, LIMITER, TARGET_LUFS, TRUE_PEAK, SCORE_GAIN, AMBIENCE_GAIN, voice,
+                    ambience.splash_times(storyboard, durations)),
                    [s["narration"] for s in shots_list], *clips, *narr.values(),
                    "fallback" if score_fallback else score)
     manifest = Manifest(STAGE)
@@ -94,25 +96,32 @@ def run(storyboard: dict, durations: dict[str, float], ratio: str, voice: str = 
         "-t", f"{total:.3f}", "-r", str(FPS), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-an", str(silent))
 
     # 3. sound: voice at each shot's start, score ducked under it
+    amb = ambience.build(total, ambience.splash_times(storyboard, durations), work / "ambience.wav")
+    audio_in = ["-i", str(amb)]
+    parts = [f"[0:a]aresample=44100,volume={AMBIENCE_GAIN}[amb]"]
     if score_fallback:
-        score = music.fallback_score(total, work / "score_fallback.wav")
-        log_run("music", None, "ffmpeg", "synth-pad", {}, None, "", 0.0, "fallback",
-                error="no ACE-Step score in outputs/music/score.wav, used a synthesised pad")
-    audio_in = ["-i", str(score)]
-    parts = [f"[0:a]aresample=44100,apad,atrim=0:{total:.3f},afade=t=out:st={total - 2.5:.3f}:d=2.5,"
-             f"volume={SCORE_GAIN}[score]"]
+        log_run("music", None, "ffmpeg", "ambience-only", {}, None, "", 0.0, "fallback",
+                error="no ACE-Step score in outputs/music/score.wav, music bed left out (ambience only)")
+        parts.append("[amb]anull[bed]")
+        first_voice = 1
+    else:
+        audio_in += ["-i", str(score)]
+        parts.append(f"[1:a]aresample=44100,apad,atrim=0:{total:.3f},afade=t=out:st={total - 2.5:.3f}:d=2.5,"
+                     f"volume={SCORE_GAIN}[score]")
+        parts.append("[score][amb]amix=inputs=2:normalize=0:duration=longest[bed]")
+        first_voice = 2
     voices = []
-    for i, (sid, wav) in enumerate(narr.items(), start=1):
+    for i, (sid, wav) in enumerate(narr.items(), start=first_voice):
         audio_in += ["-i", str(wav)]
         parts.append(f"[{i}:a]aresample=44100,adelay={int((starts[sid] + LEAD_S) * 1000)}:all=1[n{i}]")
         voices.append(f"[n{i}]")
     if voices:
         parts.append(f"{''.join(voices)}amix=inputs={len(voices)}:normalize=0:duration=longest,"
                      f"apad,atrim=0:{total:.3f},asplit=2[v1][v2]")
-        parts.append(f"[score][v1]sidechaincompress={DUCK}[duck]")
+        parts.append(f"[bed][v1]sidechaincompress={DUCK}[duck]")
         parts.append("[duck][v2]amix=inputs=2:normalize=0:duration=longest[mix]")
     else:
-        parts.append("[score]anull[mix]")
+        parts.append("[bed]anull[mix]")
     mix = work / "mix.wav"
     _ff(*audio_in, "-filter_complex", ";".join(parts), "-map", "[mix]", "-t", f"{total:.3f}", "-ac", "2", str(mix))
     limited = work / "mix_limited.wav"

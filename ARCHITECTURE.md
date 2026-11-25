@@ -58,7 +58,7 @@ settings for the same reason.
    characters, inside the safe area.
 3. The score is ducked under the voice with `sidechaincompress` (threshold 0.02, ratio 6, attack
    300 ms, release 1500 ms), which lowered it by 15.2 dB in a measurement (E07).
-4. A peak limiter, then two-pass `loudnorm` to -14 LUFS with a true-peak ceiling of -1.5 dB. The final
+4. A peak limiter, then two-pass `loudnorm` to -14 LUFS with a true-peak ceiling of -3 dB before AAC encoding (the encoded file stays under -1 dB, see E15). The final
    film measures -14.7 LUFS (E06 to E08).
 5. H.264 video at a constant 24 fps and AAC audio, in both 9:16 and 16:9.
 
