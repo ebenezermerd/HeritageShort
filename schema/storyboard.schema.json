@@ -45,6 +45,7 @@
             ]
           },
           "image_prompt": { "type": "string", "pattern": "\\S" },
+          "characters": { "type": "array", "items": { "type": "string" } },
           "seed": { "type": "integer", "minimum": 0 },
           "duration_s": { "type": "number", "minimum": 3, "maximum": 12 },
           "motion": {

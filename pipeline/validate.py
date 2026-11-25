@@ -21,6 +21,11 @@ def load_storyboard(path: Path | None = None) -> dict:
             where = "/".join(str(p) for p in e.absolute_path) or "(root)"
             lines.append(f"  {where}: {e.message}")
         raise SystemExit("\n".join(lines))
+    known = {c["id"] for c in data["characters"]}
+    for i, shot in enumerate(data["shots"]):
+        for cid in shot.get("characters", []):
+            if cid not in known:
+                raise SystemExit(f"storyboard invalid:\n  shots/{i}/characters: unknown character '{cid}'")
     return data
 
 

@@ -45,6 +45,14 @@ def test_blank_narration_is_rejected(tmp_path):
     assert "narration" in str(exc.value)
 
 
+def test_shot_naming_an_unknown_character_is_rejected(tmp_path):
+    sb = copy.deepcopy(_good())
+    sb["shots"][0]["characters"] = ["nobody"]
+    with pytest.raises(SystemExit) as exc:
+        validate.load_storyboard(_write(tmp_path, sb))
+    assert "nobody" in str(exc.value)
+
+
 def test_silent_shot_may_have_null_narration():
     sb = validate.load_storyboard()
     assert sb["shots"][-1]["narration"] is None

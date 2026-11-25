@@ -1,21 +1,44 @@
 {
   "title": "Forty Springs",
-  "ratios": ["9:16", "16:9"],
+  "ratios": [
+    "9:16",
+    "16:9"
+  ],
   "style_block": "warm hand-painted look, soft paper grain, dappled green and turquoise light, clear spring water, tall trees, red-brown earth bank, gentle watercolour edges",
   "characters": [
-    { "id": "beki", "name": "Bereket (Beki)", "age": 19, "look": "the oldest and tallest of the three brothers, short curly hair, athletic build, plain swim shorts" },
-    { "id": "tesfa", "name": "Tesahun (Tesfa)", "age": 17, "look": "the middle brother, slimmer, short dark hair, plain swim shorts" },
-    { "id": "abeni", "name": "Abenezer (Abeni)", "age": 16, "look": "the youngest and smallest of the three, short dark hair, plain swim shorts" }
+    {
+      "id": "beki",
+      "name": "Bereket (Beki)",
+      "age": 19,
+      "look": "the oldest and tallest of the three brothers, a lanky 19-year-old with warm brown skin, short curly black hair, athletic build, plain swim shorts"
+    },
+    {
+      "id": "tesfa",
+      "name": "Tesahun (Tesfa)",
+      "age": 17,
+      "look": "the middle brother, a slim 17-year-old with warm brown skin, short black hair, plain swim shorts"
+    },
+    {
+      "id": "abeni",
+      "name": "Abenezer (Abeni)",
+      "age": 16,
+      "look": "the youngest, a 16-year-old with warm brown skin, short black hair, slightly shorter than the others, plain swim shorts"
+    }
   ],
   "shots": [
     {
       "id": "s01",
       "reason": "Say where we are: the spring itself, before anyone appears.",
       "narration": "Arba Minch means forty springs.",
-      "image_prompt": "Wide view of a clear turquoise forest spring, a large fallen log lying under the water, tall trees on the bank, a red-brown earth clearing, early morning sun through the leaves, no people",
+      "image_prompt": "Wide view of a clear turquoise forest spring, a large fallen log lying submerged beneath the clear water and visible through the surface, tall trees on the bank, a red-brown earth clearing, early morning sun through the leaves, no people",
       "seed": 101,
       "duration_s": 7,
-      "motion": { "mode": "wan", "camera": "push_in", "prompt": "slow gentle push in, ripples moving on the water, leaves stirring in the breeze" }
+      "motion": {
+        "mode": "wan",
+        "camera": "push_in",
+        "prompt": "slow gentle push in, ripples moving on the water, leaves stirring in the breeze"
+      },
+      "characters": []
     },
     {
       "id": "s02",
@@ -24,7 +47,16 @@
       "image_prompt": "Three teenage brothers walking side by side toward a forest spring, seen from behind, towels over their shoulders, the tallest on the left and the smallest on the right, dappled light",
       "seed": 102,
       "duration_s": 7,
-      "motion": { "mode": "kenburns", "camera": "push_in", "prompt": "slow push in on the three walking" }
+      "motion": {
+        "mode": "kenburns",
+        "camera": "push_in",
+        "prompt": "slow push in on the three walking"
+      },
+      "characters": [
+        "beki",
+        "tesfa",
+        "abeni"
+      ]
     },
     {
       "id": "s03",
@@ -33,7 +65,14 @@
       "image_prompt": "The tallest teenage boy mid-air jumping from the bank into a turquoise spring, seen from behind, arms out wide, water waiting below",
       "seed": 103,
       "duration_s": 6,
-      "motion": { "mode": "wan", "camera": "pan_right", "prompt": "the boy leaps and falls toward the water, camera follows gently" }
+      "motion": {
+        "mode": "wan",
+        "camera": "pan_right",
+        "prompt": "the boy leaps and falls toward the water, camera follows gently"
+      },
+      "characters": [
+        "beki"
+      ]
     },
     {
       "id": "s04",
@@ -42,7 +81,14 @@
       "image_prompt": "A slimmer teenage boy mid-jump over turquoise water, seen from the side at a distance, trees behind him",
       "seed": 104,
       "duration_s": 5,
-      "motion": { "mode": "kenburns", "camera": "pan_left", "prompt": "slow pan following the jump" }
+      "motion": {
+        "mode": "kenburns",
+        "camera": "pan_left",
+        "prompt": "slow pan following the jump"
+      },
+      "characters": [
+        "tesfa"
+      ]
     },
     {
       "id": "s05",
@@ -51,25 +97,42 @@
       "image_prompt": "The smallest teenage boy standing at the edge of the bank, leaning forward about to jump, seen from behind at a distance, turquoise water ahead",
       "seed": 105,
       "duration_s": 5,
-      "motion": { "mode": "kenburns", "camera": "push_in", "prompt": "slow push in on the boy at the edge" }
+      "motion": {
+        "mode": "kenburns",
+        "camera": "push_in",
+        "prompt": "slow push in on the boy at the edge"
+      },
+      "characters": [
+        "abeni"
+      ]
     },
     {
       "id": "s06",
       "reason": "The tricks from the tree: the acrobatics Abeni remembers.",
       "narration": "Then it was flips off the tree, and whatever tricks we could think of.",
-      "image_prompt": "A teenage boy doing a flip from a tree branch over the spring, silhouetted against bright green leaves, water drops in the air",
+      "image_prompt": "A teenage boy with warm brown skin doing a flip from a tree branch over the spring, silhouetted against bright green leaves, water drops in the air",
       "seed": 106,
       "duration_s": 7,
-      "motion": { "mode": "wan", "camera": "pan_right", "prompt": "the boy flips off the branch toward the water, camera steady" }
+      "motion": {
+        "mode": "wan",
+        "camera": "pan_right",
+        "prompt": "the boy flips off the branch toward the water, camera steady"
+      },
+      "characters": []
     },
     {
       "id": "s07",
       "reason": "A close detail of the splashing, to show the joy without a face.",
       "narration": "And splashing.",
-      "image_prompt": "Close detail of hands throwing water, bright drops frozen in the air above the turquoise spring, soft blurred trees behind",
+      "image_prompt": "Close detail of a teenage boy's warm brown hands throwing water, bright drops frozen in the air above the turquoise spring, soft blurred trees behind",
       "seed": 107,
       "duration_s": 5,
-      "motion": { "mode": "kenburns", "camera": "pull_out", "prompt": "slow pull out from the splash" }
+      "motion": {
+        "mode": "kenburns",
+        "camera": "pull_out",
+        "prompt": "slow pull out from the splash"
+      },
+      "characters": []
     },
     {
       "id": "s08",
@@ -78,7 +141,16 @@
       "image_prompt": "Three teenage brothers in chest-deep turquoise water, mouths open shouting and laughing, splashing each other, faces small and softly lit",
       "seed": 108,
       "duration_s": 7,
-      "motion": { "mode": "wan", "camera": "push_in", "prompt": "the three splash and laugh, slow gentle push in" }
+      "motion": {
+        "mode": "wan",
+        "camera": "push_in",
+        "prompt": "the three splash and laugh, slow gentle push in"
+      },
+      "characters": [
+        "beki",
+        "tesfa",
+        "abeni"
+      ]
     },
     {
       "id": "s09",
@@ -87,7 +159,12 @@
       "image_prompt": "The empty spring at golden light, ripples settling on the turquoise water, the fallen log visible below, long soft shadows, no people",
       "seed": 109,
       "duration_s": 7,
-      "motion": { "mode": "kenburns", "camera": "pull_out", "prompt": "slow pull out over the quiet water" }
+      "motion": {
+        "mode": "kenburns",
+        "camera": "pull_out",
+        "prompt": "slow pull out over the quiet water"
+      },
+      "characters": []
     },
     {
       "id": "s10",
@@ -96,7 +173,16 @@
       "image_prompt": "Three teenage brothers sitting side by side on the bank with their feet in the water, seen from behind, warm evening light",
       "seed": 110,
       "duration_s": 6,
-      "motion": { "mode": "kenburns", "camera": "push_in", "prompt": "very slow push in on the three" }
+      "motion": {
+        "mode": "kenburns",
+        "camera": "push_in",
+        "prompt": "very slow push in on the three"
+      },
+      "characters": [
+        "beki",
+        "tesfa",
+        "abeni"
+      ]
     }
   ],
   "music": {
@@ -105,5 +191,8 @@
     "key": "D major",
     "duration_s": 65
   },
-  "end_card": { "text": "Made with AI. Painted from memory.", "duration_s": 3 }
+  "end_card": {
+    "text": "Made with AI. Painted from memory.",
+    "duration_s": 3
+  }
 }
