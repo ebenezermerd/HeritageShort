@@ -41,5 +41,5 @@ choose-music:
 # committed, so a clean clone can rebuild the finished film.
 save-assets:
 	mkdir -p assets/shots assets/music
-	cp outputs/shots/raw/*.mp4 outputs/shots/raw/*.json assets/shots/
+	if ls outputs/shots/raw/*.mp4 >/dev/null 2>&1; then cp outputs/shots/raw/*.mp4 outputs/shots/raw/*.json assets/shots/; else echo "no Wan clips yet, saving the score only"; fi
 	cp outputs/music/score.wav assets/music/score.wav

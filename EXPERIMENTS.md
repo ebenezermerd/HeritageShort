@@ -233,3 +233,11 @@ true peak of +0.1 dBFS after AAC encoding even though the WAV was at -1.5: the w
 make the encoder overshoot by 1.6 dB. Setting loudnorm's ceiling to -3 dB gives -14.6 LUFS and
 -1.5 dBFS in the final MP4 for both ratios. Whether it sounds better is for the author's ears; the
 music will only be right once an ACE-Step track replaces the empty music bed.
+
+## E17. Which score candidate? 
+
+**Hypothesis.** One of the ACE-Step candidates sits under the narration without competing with it.
+
+**Change.** Listened to 3 candidates (de99c94f-0606-6eed-34cc-0f7e23eb814d.flac, ea6fa79b-20f1-0be7-20f3-8163b7ca8330.flac, fa37f557-f519-478d-9755-c01daf18b8b0.flac) quietly under the narration.
+
+**Result.** Chose de99c94f-0606-6eed-34cc-0f7e23eb814d.flac. Track 1 is steady and its instrumental feel and tempo match the pace of the pictures; it suits the narrative, sounds joyful and has a few surprising touches. (Abeni's choice after listening to all three; measured -15.2 LUFS, loudness range 3.2 LU, the steadiest of the three.)
