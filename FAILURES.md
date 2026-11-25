@@ -92,3 +92,18 @@ quota was spent again.
 - `radio_cut`'s `main` asked for the Gemini voice while the quota was gone. It
   sat in 15 s and 30 s retry waits for eight shots until I stopped it. It now
   takes `--voice`, and I now check the quota before long runs.
+
+## 7. loudnorm quietly stopped doing its job (25 Nov)
+
+**What happened.** My loudness tests passed, but measuring the real film showed -15.5 LUFS, not the
+-14 I had set. Nothing errored.
+
+**What I tried.** First I guessed high peaks and built a synthetic test signal to reproduce it. Two
+versions of that signal passed without the bug, so they proved nothing. I stopped guessing and read
+loudnorm's own measurement of the real mix: loudness range 17.2 LU against a target of 11, and
+`normalization_type: dynamic`. It had switched to its fallback mode.
+
+**What fixed it.** A peak limiter before loudnorm (`alimiter limit=0.3`), chosen from a measured
+comparison (E08). The assembly cache key now includes the audio settings, so changing them cannot
+be skipped by a stale cache. The honest gap: I have no failing test that reproduces this; the evidence
+is the measurements in `EXPERIMENTS.md` E06 to E08.

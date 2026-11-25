@@ -89,6 +89,20 @@ def test_loudness_is_near_minus_14_lufs_with_true_peak_below_minus_1(project):
     assert peak <= -0.9
 
 
+def test_sparse_speech_mix_still_reaches_the_target_loudness(tmp_path):
+    # Real narration is short bursts over a quiet bed, so its peaks are high for its loudness.
+    # Without a limiter, loudnorm stalled at about -15.5 LUFS on the real film (experiment E06).
+    src, dst = tmp_path / "sparse.wav", tmp_path / "normed.wav"
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi", "-i",
+                    "aevalsrc=0.02*sin(2*PI*150*t)+0.1*sin(2*PI*300*t)*lt(mod(t\\,4)\\,0.6)"
+                    "+0.8*sin(2*PI*1000*t)*lt(mod(t\\,4)\\,0.003):s=44100:d=20",
+                    "-ac", "2", str(src)], check=True)
+    assemble._loudnorm_two_pass(src, dst)
+    integrated, peak = _loudness(dst)
+    assert integrated == pytest.approx(-14.0, abs=0.7)
+    assert peak <= -1.4
+
+
 def test_missing_score_falls_back_and_is_logged_not_fatal(project):
     assemble.run(SB, DUR, "9:16")
     rows = [json.loads(x) for x in (project / "runs.jsonl").read_text().splitlines()]

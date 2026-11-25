@@ -19,6 +19,9 @@ TARGET_LUFS = -14
 TRUE_PEAK = -1.5  # a little under the -1 dB ceiling so AAC encoding cannot push it over
 SCORE_GAIN = 0.6
 DUCK = "threshold=0.02:ratio=6:attack=300:release=1500"
+# Peak limiter ahead of loudnorm. Sparse speech has a very wide loudness range, so without it loudnorm
+# fell back to "dynamic" mode and stalled near -15.5 LUFS (experiment E08). 0.3 reached -14.7.
+LIMITER = "alimiter=limit=0.3:attack=2:release=50:level=false"
 
 
 def _ff(*args: str) -> subprocess.CompletedProcess:
@@ -52,6 +55,7 @@ def run(storyboard: dict, durations: dict[str, float], ratio: str) -> Path:
     score = root / "outputs" / "music" / "score.wav"
     score_fallback = not score.exists()
     h = input_hash(ratio, {k: round(v, 3) for k, v in durations.items()}, card,
+                   (DUCK, LIMITER, TARGET_LUFS, TRUE_PEAK, SCORE_GAIN),
                    [s["narration"] for s in shots_list], *clips, *narr.values(),
                    "fallback" if score_fallback else score)
     manifest = Manifest(STAGE)
@@ -104,8 +108,10 @@ def run(storyboard: dict, durations: dict[str, float], ratio: str) -> Path:
         parts.append("[score]anull[mix]")
     mix = work / "mix.wav"
     _ff(*audio_in, "-filter_complex", ";".join(parts), "-map", "[mix]", "-t", f"{total:.3f}", "-ac", "2", str(mix))
+    limited = work / "mix_limited.wav"
+    _ff("-i", str(mix), "-af", LIMITER, str(limited))
     normed = work / "mix_norm.wav"
-    _loudnorm_two_pass(mix, normed)
+    _loudnorm_two_pass(limited, normed)
 
     # 4. mux
     _ff("-i", str(silent), "-i", str(normed), "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",

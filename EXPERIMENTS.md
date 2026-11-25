@@ -61,3 +61,51 @@ so the flip (shot 6) and the hands (shot 7) will still come out pale.
 E02, and regenerating them cost exactly 4 calls (2 shots x 2 ratios).
 `runs.jsonl` shows 4 successful keyframe calls each for shots 6 and 7 and
 only 2 for shot 9, which never changed.
+
+## E05. FLUX.1 schnell against FLUX.2 klein 4B on the same shot (25 Nov)
+
+**Hypothesis.** The older, faster schnell will be good enough for the keyframes, so klein is not needed.
+
+**Change.** One prompt (shot 8, the three brothers shouting in the water), both models on Cloudflare,
+asked for 768x1344.
+
+**Result.** schnell ignored the size and returned 1024x1024 (it takes no width or height there), takes
+no seed (FAILURES #2), and took 34.2 s against klein's 8.6 s (the two ran while another job was also
+using the account, so treat the times as rough). Its faces were bigger and more cartoonish. klein gave
+the watercolour look the rest of the film has, the right 9:16 frame, and a seed. klein stays the
+keyframe model. Image: `outputs/experiments/e05_compare.png`.
+
+## E06. One-pass against two-pass loudness normalisation (25 Nov)
+
+**Hypothesis.** Two-pass `loudnorm` will land closer to the -14 LUFS target than one pass.
+
+**Change.** Same mix (narration over the score), measured raw, then one-pass, then two-pass.
+
+**Result.** Raw -21.8 LUFS. One-pass -16.3 LUFS. Two-pass -15.5 LUFS. Two-pass was 0.8 LU closer, but
+both missed the target by 1.5 LU or more, so the hypothesis held only in direction.
+
+## E07. How much does the ducking actually lower the score? (25 Nov)
+
+**Hypothesis.** `sidechaincompress` at threshold 0.02, ratio 6, attack 300 ms, release 1500 ms (the
+brief's starting values) will pull the score down clearly while the narrator speaks.
+
+**Change.** Measured the mean level of the score alone during the first narration line, with the
+sidechain off and on.
+
+**Result.** -31.5 dB without ducking, -46.7 dB with it: a 15.2 dB drop. The starting values work as
+they are, so I did not tune them. I judged the level by measurement, not by ear.
+
+## E08. A limiter in front of loudnorm (25 Nov)
+
+**Hypothesis.** `loudnorm` stalls below target because speech over a quiet bed has high peaks. A peak
+limiter ahead of it should let it reach -14 LUFS.
+
+**Change.** Before changing the code, I read loudnorm's own measurement of the real mix: input
+loudness range 17.2 LU against a target of 11, and `normalization_type: dynamic`, so it had silently
+dropped out of linear mode. I then tried `alimiter` at limit 0.5, 0.3 and 0.2 before the two-pass.
+
+**Result.** 0.5 gave -15.5 LUFS, 0.3 gave -14.7, 0.2 gave -14.0, all with true peak -1.5 dBFS. I chose
+0.3: the 0.2 setting reaches the target but flattens the speech more, and being 0.7 LU under is
+harmless because platforms only turn loud files down. The final film measures -14.7 LUFS, true peak
+-1.4 dBFS, in both ratios. I could not reproduce the stall with synthetic test audio (FAILURES #7),
+so this one is backed by the measurements above, not by a failing test.
