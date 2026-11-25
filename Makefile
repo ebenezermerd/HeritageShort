@@ -18,8 +18,10 @@ test:
 validate:
 	uv run python -m pipeline.validate
 
+VOICE ?= gemini
+
 film: validate
-	uv run python -m pipeline.run_all
+	uv run python -m pipeline.run_all --voice $(VOICE)
 
 clean:
 	rm -rf outputs/*
