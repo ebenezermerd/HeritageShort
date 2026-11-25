@@ -3,3 +3,4 @@ refs/
 outputs/
 .venv/
 __pycache__/
+.superpowers/
