@@ -97,7 +97,8 @@ save("10_acestep", [
 !cd /kaggle/working/ace && uv sync
 """),
     code("%%writefile /kaggle/working/gen_music.py\n" + ACE_SCRIPT.strip()),
-    code("!cd /kaggle/working/ace && uv run python /kaggle/working/gen_music.py"),
+    # Kaggle sets MPLBACKEND to its inline backend, which ACE-Step's own venv does not have (FAILURES #9).
+    code("!cd /kaggle/working/ace && MPLBACKEND=Agg uv run python /kaggle/working/gen_music.py"),
 ])
 
 # ---------------------------------------------------------------- 20 wan

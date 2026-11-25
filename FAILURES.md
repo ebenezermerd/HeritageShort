@@ -137,3 +137,17 @@ checked at full resolution, figure by figure, and the author approves the picks 
 
 **What I would do differently.** Look at every image the moment it is made, and treat "same seed" as a
 claim to test rather than a fact. It also means the Wan clips will animate clean pictures.
+
+## 9. ACE-Step would not import on Kaggle because of a plotting setting (25 Nov)
+
+**What broke.** The first real run of `10_acestep`. `uv sync` installed ACE-Step 1.5 into its own
+virtual environment without trouble, but the script died on import with
+`ValueError: Key backend: 'module://matplotlib_inline.backend_inline' is not a valid value`.
+The chain was ACE-Step's LoRA code, Lightning, torchmetrics, matplotlib.
+
+**Why.** Kaggle sets the environment variable `MPLBACKEND` to its notebook's inline backend. The
+child process inherits it, but ACE-Step's separate venv has no `matplotlib_inline`, so matplotlib
+refuses the setting. Nothing to do with music generation at all.
+
+**What fixed it.** Run the script with `MPLBACKEND=Agg`. No reinstall was needed, because the venv was
+already built and persistence was on. The notebook generator now sets it.
