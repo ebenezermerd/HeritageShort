@@ -151,3 +151,15 @@ refuses the setting. Nothing to do with music generation at all.
 
 **What fixed it.** Run the script with `MPLBACKEND=Agg`. No reinstall was needed, because the venv was
 already built and persistence was on. The notebook generator now sets it.
+
+## 10. No free image generation on Gemini, and a stale cache hid a mix change (25 Nov)
+
+**Gemini images.** With Cloudflare's daily 10,000 neurons spent, I tried the new Gemini key on
+`gemini-2.5-flash-image`. The key lists eight image models (Nano Banana among them), but the free tier
+answers `429 ... generate_content_free_tier_requests, limit: 0`. Image generation on Gemini needs
+billing, as the brief said. The only free image route left was waiting for Cloudflare's daily reset.
+
+**Stale cache.** After taking the noise ambience out (E18), the rebuild reported "assemble 0.0 s": the
+assembly cache key did not include the mix design, so the old film with the hiss was reused. The key now
+includes `MIX_VERSION`. Same lesson as the narration prompt in E03: the cache key must cover every
+decision that changes the output, including the code's own choices.

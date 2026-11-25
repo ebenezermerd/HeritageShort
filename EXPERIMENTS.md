@@ -241,3 +241,17 @@ music will only be right once an ACE-Step track replaces the empty music bed.
 **Change.** Listened to 3 candidates (de99c94f-0606-6eed-34cc-0f7e23eb814d.flac, ea6fa79b-20f1-0be7-20f3-8163b7ca8330.flac, fa37f557-f519-478d-9755-c01daf18b8b0.flac) quietly under the narration.
 
 **Result.** Chose de99c94f-0606-6eed-34cc-0f7e23eb814d.flac. Track 1 is steady and its instrumental feel and tempo match the pace of the pictures; it suits the narrative, sounds joyful and has a few surprising touches. (Abeni's choice after listening to all three; measured -15.2 LUFS, loudness range 3.2 LU, the steadiest of the three.)
+
+## E18. Take the synthesised ambience back out (25 Nov)
+
+**Hypothesis.** E16's pink-noise "water" and white-noise "splashes" would make the place feel real.
+
+**Change.** None at first: the author listened to the preview with the chosen score (E17).
+
+**Result.** Wrong. The author heard a "shh" between narration lines. That is the noise bed: the
+ducking lowers it while the voice speaks and lets it rise again in every pause, so it comes and goes
+like a hiss, and noise from FFmpeg does not sound like water. With a real ACE-Step score there is no
+gap left to fill, so the score is now the only bed under the voice and the noise ambience is used only
+when no score exists (a test pins this). The Gemini narration clips themselves are clean: their noise
+floor measures -62 to -90 dB. Final mix: -14.0 LUFS, true peak -1.5 dBFS. Lesson: a sound I cannot hear
+should not go into the film without the author hearing it first.

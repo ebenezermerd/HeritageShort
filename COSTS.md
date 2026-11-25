@@ -44,7 +44,8 @@ Whole project at list price: a few cents. The real cost was my time and one dail
 ## Frontier comparison
 
 None. I had no access to a frontier image, video or music model, so there is no like-for-like
-comparison. The only model comparison I made is klein against schnell (E05).
+comparison. I checked: the Gemini key lists Nano Banana and other image models, but the free tier allows
+0 image requests (FAILURES #10). The only model comparison I made is klein against schnell (E05).
 
 ## A trade-off I chose
 

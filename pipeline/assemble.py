@@ -19,6 +19,7 @@ TARGET_LUFS = -14
 TRUE_PEAK = -3.0  # AAC encoding of the splash noise overshot a -1.5 dB ceiling by 1.6 dB (E15)
 SCORE_GAIN = 0.6
 AMBIENCE_GAIN = 0.8
+MIX_VERSION = 2  # 2: with a real score, no synthesised ambience (E18). Part of the cache key.
 DUCK = "threshold=0.02:ratio=6:attack=300:release=1500"
 # Peak limiter ahead of loudnorm. Sparse speech has a very wide loudness range, so without it loudnorm
 # fell back to "dynamic" mode and stalled near -15.5 LUFS (experiment E08). 0.3 reached -14.7.
@@ -63,7 +64,7 @@ def run(storyboard: dict, durations: dict[str, float], ratio: str, voice: str = 
     score = root / "outputs" / "music" / "score.wav"
     score_fallback = not score.exists()
     h = input_hash(ratio, {k: round(v, 3) for k, v in durations.items()}, card,
-                   (DUCK, LIMITER, TARGET_LUFS, TRUE_PEAK, SCORE_GAIN, AMBIENCE_GAIN, voice,
+                   (DUCK, LIMITER, TARGET_LUFS, TRUE_PEAK, SCORE_GAIN, AMBIENCE_GAIN, MIX_VERSION, voice,
                     ambience.splash_times(storyboard, durations)),
                    [s["narration"] for s in shots_list], *clips, *narr.values(),
                    "fallback" if score_fallback else score)
@@ -96,20 +97,19 @@ def run(storyboard: dict, durations: dict[str, float], ratio: str, voice: str = 
         "-t", f"{total:.3f}", "-r", str(FPS), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-an", str(silent))
 
     # 3. sound: voice at each shot's start, score ducked under it
-    amb = ambience.build(total, ambience.splash_times(storyboard, durations), work / "ambience.wav")
-    audio_in = ["-i", str(amb)]
-    parts = [f"[0:a]aresample=44100,volume={AMBIENCE_GAIN}[amb]"]
     if score_fallback:
+        # No score yet: the synthesised ambience is the only bed (logged as a fallback).
+        amb = ambience.build(total, ambience.splash_times(storyboard, durations), work / "ambience.wav")
         log_run("music", None, "ffmpeg", "ambience-only", {}, None, "", 0.0, "fallback",
                 error="no ACE-Step score in outputs/music/score.wav, music bed left out (ambience only)")
-        parts.append("[amb]anull[bed]")
-        first_voice = 1
+        audio_in = ["-i", str(amb)]
+        parts = [f"[0:a]aresample=44100,volume={AMBIENCE_GAIN}[bed]"]
     else:
-        audio_in += ["-i", str(score)]
-        parts.append(f"[1:a]aresample=44100,apad,atrim=0:{total:.3f},afade=t=out:st={total - 2.5:.3f}:d=2.5,"
-                     f"volume={SCORE_GAIN}[score]")
-        parts.append("[score][amb]amix=inputs=2:normalize=0:duration=longest[bed]")
-        first_voice = 2
+        # A real score is the only bed. The noise ambience read as a hiss between lines (E18).
+        audio_in = ["-i", str(score)]
+        parts = [f"[0:a]aresample=44100,apad,atrim=0:{total:.3f},afade=t=out:st={total - 2.5:.3f}:d=2.5,"
+                 f"volume={SCORE_GAIN}[bed]"]
+    first_voice = 1
     voices = []
     for i, (sid, wav) in enumerate(narr.items(), start=first_voice):
         audio_in += ["-i", str(wav)]
@@ -133,7 +133,8 @@ def run(storyboard: dict, durations: dict[str, float], ratio: str, voice: str = 
     _ff("-i", str(silent), "-i", str(normed), "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
         "-t", f"{total:.3f}", "-movflags", "+faststart", str(out))
     log_run(STAGE, None, "ffmpeg", "ffmpeg", {"ratio": ratio, "voice": voice, "lufs": TARGET_LUFS,
-                                              "true_peak": TRUE_PEAK, "duck": DUCK},
+                                              "true_peak": TRUE_PEAK, "duck": DUCK,
+                                              "ambience": score_fallback},
             None, h, time.time() - start_time, "ok")
     manifest.put(f"{ratio}@{voice}", h, str(out.relative_to(root)))
     return out

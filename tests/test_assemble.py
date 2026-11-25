@@ -126,3 +126,16 @@ def test_second_run_with_same_inputs_does_not_rebuild(project):
     stamp = out.stat().st_mtime_ns
     assemble.run(SB, DUR, "9:16")
     assert out.stat().st_mtime_ns == stamp
+
+
+def test_with_a_real_score_the_synthesised_noise_ambience_is_left_out(project):
+    # The author heard the pink-noise "water" and white-noise "splashes" as a hiss ("shh") between
+    # narration lines (E18). Once an ACE-Step score exists, the score is the only bed under the voice.
+    score = project / "outputs" / "music" / "score.wav"
+    score.parent.mkdir(parents=True)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi", "-i",
+                    "sine=frequency=220:duration=20", "-ac", "2", str(score)], check=True)
+    assemble.run(SB, DUR, "9:16")
+    assert not (project / "outputs/assemble/9x16/gemini/ambience.wav").exists()
+    rows = [json.loads(x) for x in (project / "runs.jsonl").read_text().splitlines()]
+    assert [r for r in rows if r["stage"] == "assemble"][-1]["params"]["ambience"] is False
