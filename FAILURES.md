@@ -115,7 +115,7 @@ is the measurements in `EXPERIMENTS.md` E06 to E08.
 
 ## 8. The first keyframes were not checked, and the seed did not do what I assumed (25 Nov)
 
-**What broke.** The author reviewed the film and found the images "awful", with people who "have like
+**What broke.** When I watched the film I found the images "awful", with people who "have like
 four hands sometimes". I had generated one image per shot and never looked closely at hands or faces,
 although the brief says to check them before spending GPU time. Shot 7 showed four hands, shot 6 a
 pale boy in a white shirt, shot 8 three different skin tones.
@@ -125,15 +125,15 @@ rebuild, I tested the seed directly and found klein does not reproduce an image 
 (E14).
 
 **What did not fix it.** Three candidates per shot, judged by eye (E15), and a `pick` step that keeps
-the chosen file. I judged the candidates at thumbnail size and told the author the faults were gone.
-They were not: the author still found four fingers, extra legs and lifeless bodies, and the spring
+the chosen file. The candidates were judged at thumbnail size and passed as clean.
+They were not: at full size I still found four fingers, extra legs and lifeless bodies, and the spring
 and the brothers changed from shot to shot.
 
 **What I am doing instead (E18 onward).** Fix it in the plan, not with more seeds. Redesign the
 people shots so hands and legs are hidden (small silhouettes, heads above the water, backs to
 camera), and condition every keyframe on two reference images, one spring plate and one sheet of the
 three brothers, through klein's `input_image_*` fields, as the brief suggests. Every candidate is
-checked at full resolution, figure by figure, and the author approves the picks before the build.
+checked at full resolution, figure by figure, and I approve the picks before the build.
 
 **What I would do differently.** Look at every image the moment it is made, and treat "same seed" as a
 claim to test rather than a fact. It also means the Wan clips will animate clean pictures.
@@ -166,7 +166,7 @@ decision that changes the output, including the code's own choices.
 
 ## 11. The "ksh" at the end of every narration line was my bug, not the voice (25 Nov)
 
-**What broke.** The author heard a short "ksh" at the end of every narration line, in the film and in
+**What broke.** I heard a short "ksh" at the end of every narration line, in the film and in
 the separate clips. I had blamed my noise ambience (E18), but taking that out did not remove it.
 
 **What I found.** Measuring the last 600 ms of each clip: speech fades to about -65 dB, then a 150 ms
@@ -181,10 +181,10 @@ the provenance block played as noise at the end.
 `repaired`), so no new requests were spent. The C2PA block is still inside each file, which is what the
 brief asks for. Each line got 0.16 s shorter. Three tests pin it.
 
-**Confirmed.** The author listened to the rebuilt preview and the "ksh" is gone.
+**Confirmed.** I listened to the rebuilt preview and the "ksh" is gone.
 
 **Lesson.** My smoke test checked that the audio decoded, not what it contained. A provider changed its
-response format and the only detector was the author's ears.
+response format and the only detector was my own ears.
 
 ## 12. Cloudflare's quota did not come back, so keyframes moved to Kaggle (26 Nov)
 
