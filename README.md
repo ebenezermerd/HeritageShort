@@ -28,9 +28,12 @@ make test            # the test suite
 ```
 
 `make film` writes `outputs/final_9x16.mp4` (the phone version) and `outputs/final_16x9.mp4`, made with the real Gemini voice. `make film VOICE=say` names its files `*.say-placeholder.mp4`.
-On a fresh clone with a placeholder voice it took about 4.8 minutes, almost all of it the 20 image
-calls (see `COSTS.md`). `scripts/clean_clone_check.sh` proves that: it clones, runs, and checks both
-files are 60 to 90 seconds.
+The chosen pictures, the Gemini narration and the score are committed under `assets/`, so a fresh
+clone rebuilds the submitted film in under a minute with no keys and no model calls (the narration,
+reference and keyframe stages find everything cached). `scripts/clean_clone_check.sh` proves that: it
+clones, runs `make setup film`, checks both files are 60 to 90 seconds, and fails if the build made any
+model call (`docs/evidence/clean_clone_2026-11-26.log`). Keys are only needed to make new pictures or
+lines after changing the storyboard.
 
 ## What it does
 

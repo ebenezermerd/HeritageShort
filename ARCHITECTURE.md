@@ -67,4 +67,8 @@ settings for the same reason.
 Wan 2.2 and ACE-Step run in Kaggle notebooks (`notebooks/`). The handoff is files. `make
 kaggle-bundle` writes the keyframes and job file to upload; the notebooks write clips and tracks that
 are downloaded into `outputs/shots/raw/` and `outputs/music/raw/`. Chosen files are committed under
-`assets/` and `make film` restores them, so a clean clone can reproduce the finished film.
+`assets/` (`make save-assets`): the score, the 20 picked keyframes, the two reference pictures and the
+Gemini narration, each with its stage's manifest. `make film` copies them back into `outputs/` when they
+are missing, so every stage sees them as cached and a clean clone rebuilds the finished film without a
+single model call. They have to be kept as files: klein on Cloudflare does not repeat an image from its
+seed (E14), and Gemini allows 10 speech requests a day.

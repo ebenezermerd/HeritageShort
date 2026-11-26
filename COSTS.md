@@ -17,7 +17,9 @@ price" is what the same work would cost at published rates, looked up on 25 Nov 
 | Wan 2.2 clips | Kaggle T4 | not run (E20) | | 0 |
 | ACE-Step score | Kaggle T4, ACE-Step 1.5 turbo | 1 batch of 3 x 65 s | 18.5 s generation | 0.3 GPU min generating; the first run also spent several minutes installing and downloading weights (not timed) |
 
-A fresh clone with the placeholder voice built both films in about 4.8 minutes (the log is saved in `docs/evidence/clean_clone_2026-11-25.log`; it ran in a temporary clone with its own `runs.jsonl`, so its roughly 20 image calls are not in the table above): narration 9.3 s,
+A fresh clone now rebuilds the submitted film from `assets/` with no model calls: narration 0.4 s,
+keyframes 0 s, shots 16.9 s, assembly 18.7 s and 18.0 s (`docs/evidence/clean_clone_2026-11-26.log`).
+Before the chosen files were committed, a fresh clone with the placeholder voice built both films in about 4.8 minutes (the log is saved in `docs/evidence/clean_clone_2026-11-25.log`; it ran in a temporary clone with its own `runs.jsonl`, so its roughly 20 image calls are not in the table above): narration 9.3 s,
 keyframes 192.5 s, shots 21.2 s, assembly 31.5 s and 33.8 s. Failures are in the log too: 38 failed
 Gemini speech calls (the daily quota, FAILURES #4) and 3 failed smoke calls.
 

@@ -1,0 +1,38 @@
+uv sync
+Using CPython 3.12.13 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtual environment at: .venv
+Resolved 20 packages in 0.96ms
+Installed 18 packages in 22ms
+ + attrs==26.1.0
+ + certifi==2026.11.20
+ + charset-normalizer==3.5.3
+ + idna==3.20
+ + iniconfig==2.3.1
+ + jsonschema==4.26.0
+ + jsonschema-specifications==2025.9.1
+ + packaging==26.4
+ + pillow==13.0.0
+ + pluggy==1.7.0
+ + pygments==2.21.0
+ + pytest==9.2.0
+ + python-dotenv==1.2.4
+ + referencing==0.37.0
+ + requests==2.34.2
+ + rpds-py==2026.9.1
+ + typing-extensions==4.16.0
+ + urllib3==2.8.0
+uv run python -m pipeline.validate
+storyboard ok
+uv run python -m pipeline.run_all --voice gemini
+music: 0 ACE-Step candidates found
+  narration         0.4s
+  references        0.0s
+  keyframes         0.0s
+  shots            16.9s
+  assemble 9:16    18.7s
+  assemble 16:9    18.0s
+9:16: /private/var/folders/1k/sgvh3mgn3t9br69rgwtkdslm0000gp/T/tmp.K6mw7IcCT6/repo/outputs/final_9x16.mp4
+16:9: /private/var/folders/1k/sgvh3mgn3t9br69rgwtkdslm0000gp/T/tmp.K6mw7IcCT6/repo/outputs/final_16x9.mp4
+outputs/final_9x16.mp4: 63.000000 s ok
+outputs/final_16x9.mp4: 63.000000 s ok
+clean clone OK in /var/folders/1k/sgvh3mgn3t9br69rgwtkdslm0000gp/T/tmp.K6mw7IcCT6/repo: both films built, no model calls
