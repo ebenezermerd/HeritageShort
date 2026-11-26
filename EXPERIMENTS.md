@@ -279,3 +279,20 @@ panels this time. s05 and s10 came out right. Every s08 candidate drew a fourth 
 the three heads, though, so the 9:16 s08 is a full-height slice of the picked 16:9 frame (which has
 exactly three), scaled up 1.75 times (`crop_from_wide` in the storyboard, logged as a pick with its
 source). It is softer than the others, but it shows the right number of brothers.
+
+## E20. Ship without Wan (26 Nov)
+
+**Question.** Is it worth running Wan 2.2 on the four planned moving shots (s01, s04, s07, s09) this
+close to the deadline?
+
+**What I knew.** The Wan notebook had never run. The same T4 needed four rounds of out-of-memory fixes
+for a 4B image model (FAILURES #12), and Wan is a 5B video model that would have to run in float16, a
+numeric path none of my runs had tried. Every Wan shot already had a working fallback: a slow camera
+move over its painting, logged as `fallback`. The one Wan shot with a person in it (s04) is exactly
+where moving a body tends to bring back the extra-limb problem the listeners and Abeni kept pointing at.
+
+**Decision.** Built the complete film first with camera moves on every shot (63 s, -14.0 LUFS, no new
+model calls, 54 s to build), then Abeni decided not to run Wan. The four shots stay as camera moves, and
+`runs.jsonl` says so on each of them. The Wan bundle (`make kaggle-bundle`) and notebook `20_wan` are in
+the repo, untested. What I lose: real motion in four shots. What I keep: a finished film that does not
+depend on an untried GPU job, and pictures whose figures were all checked at full size.
