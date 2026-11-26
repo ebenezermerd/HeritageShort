@@ -129,7 +129,7 @@ def cloudflare_flux(prompt: str, seed: int, size: tuple[int, int], model: str = 
     headers = {"Authorization": f"Bearer {require_env('CF_API_TOKEN')}"}
     if "klein" in model:
         fields = {"prompt": prompt, "width": str(size[0]), "height": str(size[1]), "seed": str(seed)}
-        files = {k: (None, v) for k, v in fields.items()}
+        files: dict[str, tuple] = {k: (None, v) for k, v in fields.items()}
         for i, data in enumerate(refs or []):
             files[f"input_image_{i}"] = (f"ref{i}.png", data, "image/png")
         r = requests.post(url, headers=headers, files=files, timeout=180)

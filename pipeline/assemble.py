@@ -34,7 +34,10 @@ def _loudnorm_two_pass(src: Path, dst: Path) -> None:
     base = f"loudnorm=I={TARGET_LUFS}:TP={TRUE_PEAK}:LRA=11"
     probe = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(src), "-af", f"{base}:print_format=json",
                             "-f", "null", "-"], capture_output=True, text=True, check=True).stderr
-    m = json.loads(re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", probe, flags=re.S).group(0))
+    found = re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", probe, flags=re.S)
+    if found is None:
+        raise RuntimeError("loudnorm printed no measurement for " + str(src))
+    m = json.loads(found.group(0))
     measured = (f"measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}:"
                 f"measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true")
     _ff("-i", str(src), "-af", f"{base}:{measured}", "-ar", "44100", "-ac", "2", str(dst))

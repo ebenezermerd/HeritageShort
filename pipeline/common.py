@@ -80,7 +80,7 @@ class Manifest:
 
     def is_fresh(self, shot_id: str, h: str) -> bool:
         entry = self.get(shot_id)
-        return bool(entry) and entry["hash"] == h and (ROOT / entry["path"]).exists()
+        return entry is not None and entry["hash"] == h and (ROOT / entry["path"]).exists()
 
     def put(self, shot_id: str, h: str, path: str) -> None:
         data = self._read()

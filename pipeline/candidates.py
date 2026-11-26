@@ -76,10 +76,10 @@ def pick(storyboard: dict, shot_id: str, ratio: str = RATIO, provider: str = "cl
     dest.parent.mkdir(parents=True, exist_ok=True)
     if crop:
         # A full-height slice of the 16:9 picture, scaled up to the 9:16 size (E19, s08).
-        w, h = SIZES[ratio]
+        out_w, out_h = SIZES[ratio]
         wide = Image.open(src).convert("RGB")
-        cut_w = round(wide.height * w / h)
-        wide.crop((crop["x"], 0, crop["x"] + cut_w, wide.height)).resize((w, h), Image.LANCZOS).save(dest)
+        cut_w = round(wide.height * out_w / out_h)
+        wide.crop((crop["x"], 0, crop["x"] + cut_w, wide.height)).resize((out_w, out_h), Image.LANCZOS).save(dest)
     else:
         shutil.copyfile(src, dest)
     h = input_hash(build_prompt(storyboard, shot, ratio), seed, ratio, MODEL, *ref_paths(storyboard, shot, ratio))
