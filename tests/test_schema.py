@@ -73,3 +73,14 @@ def test_a_shot_may_only_use_a_declared_reference(tmp_path, monkeypatch):
     bad.write_text(_json.dumps(sb))
     with pytest.raises(SystemExit, match="unknown reference 'nowhere'"):
         validate.load_storyboard(bad)
+
+
+def test_a_per_ratio_reference_must_also_be_declared(tmp_path):
+    import json as _json
+    from pipeline import common
+    sb = _json.loads((common.ROOT / "storyboard.json").read_text())
+    sb["shots"][0]["refs_by_ratio"] = {"9:16": ["nowhere"]}
+    bad = tmp_path / "sb.json"
+    bad.write_text(_json.dumps(sb))
+    with pytest.raises(SystemExit, match="unknown reference 'nowhere'"):
+        validate.load_storyboard(bad)

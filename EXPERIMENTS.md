@@ -255,3 +255,23 @@ gap left to fill, so the score is now the only bed under the voice and the noise
 when no score exists (a test pins this). The Gemini narration clips themselves are clean: their noise
 floor measures -62 to -90 dB. Final mix: -14.0 LUFS, true peak -1.5 dBFS. Lesson: a sound I cannot hear
 should not go into the film without the author hearing it first.
+
+## E19. Reference images on Kaggle, and the stacked-panel problem (26 Nov)
+
+**Hypothesis.** Giving klein the spring picture and the brothers sheet as references keeps the place
+and the three brothers the same from shot to shot, which plain prompts did not (E15).
+
+**Change.** Generated 2 references and 50 candidates with FLUX.2 klein 4B on a Kaggle T4 (3 per shot
+at 9:16, 2 at 16:9), 98 s an image on average, 5,105 s of GPU time in all
+(`outputs/kaggle_logs/notebook_log_keyframes.jsonl`). Looked at every candidate, then at the figures
+cropped at full size: hands, feet, how many legs.
+
+**Result.** The spring is now the same place in every shot: the same pool, log, red bank and leaning
+trunk. No extra limbs in any candidate I picked. But every 9:16 candidate for s05, s08 and s10, and
+two of three for s02, came back as two pictures stacked in one frame, one showing the place and one
+the brothers lined up like the sheet. The same shots at 16:9 were single pictures, and no shot with
+the spring as its only reference was ever split. So a tall frame plus a character sheet reads to the
+model as "make a page with two panels". Fix: `refs_by_ratio` lets a shot use only the spring at 9:16
+and keep both references at 16:9; the brothers' looks stay in the text prompt. Picked 17 of 20 frames
+now; s05, s08 and s10 at 9:16 are being remade with the spring alone (a test pins that the override
+changes only the one ratio, so the picked 16:9 frames are not regenerated).

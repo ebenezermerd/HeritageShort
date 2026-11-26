@@ -31,7 +31,7 @@ def test_jobs_list_references_first_then_n_candidates_per_shot_and_ratio_with_ex
     assert len(shots) == 2 * 2 * 2
     s01 = [j for j in shots if j["id"] == "s01" and j["ratio"] == "9:16"]
     assert [j["seed"] for j in s01] == [10, 11]
-    assert s01[0]["prompt"] == keyframes.build_prompt(SB, SB["shots"][0])
+    assert s01[0]["prompt"] == keyframes.build_prompt(SB, SB["shots"][0], "9:16")
     assert s01[0]["refs"] == ["refs/spring.png"] and s01[0]["out"] == "shots/9x16/s01/10.png"
     assert (s01[0]["width"], s01[0]["height"]) == (768, 1344)
 
@@ -65,3 +65,13 @@ def test_picking_imported_candidates_per_ratio_makes_keyframes_cached(isolated_r
     rows = [json.loads(x) for x in (isolated_root / "runs.jsonl").read_text().splitlines()]
     assert any(r["status"] == "imported" and r["provider"] == "kaggle" for r in rows)
     assert [r["seed"] for r in rows if r["status"] == "picked"] == [11, 10]
+
+
+def test_export_can_limit_to_some_shots_and_one_ratio_and_uses_per_ratio_refs():
+    sb = json.loads(json.dumps(SB))
+    sb["shots"][0]["refs_by_ratio"] = {"9:16": []}
+    jobs = json.loads(kaggle_images.export_jobs(sb, n=3, shots=["s01"], ratios=["9:16"]).read_text())
+    assert [j["kind"] for j in jobs] == ["ref", "shot", "shot", "shot"]  # references stay: shots may need them
+    assert {(j["id"], j["ratio"]) for j in jobs if j["kind"] == "shot"} == {("s01", "9:16")}
+    assert all(j["refs"] == [] for j in jobs if j["kind"] == "shot")
+    assert jobs[1]["prompt"] == keyframes.build_prompt(sb, sb["shots"][0], "9:16")

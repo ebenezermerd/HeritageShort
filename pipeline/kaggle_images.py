@@ -13,7 +13,7 @@ from pathlib import Path
 from pipeline import common
 from pipeline.candidates import STAGE as CAND_STAGE, candidate_path
 from pipeline.common import Manifest, input_hash, log_run
-from pipeline.keyframes import MODEL, SIZES, build_prompt, ratio_dir
+from pipeline.keyframes import MODEL, SIZES, build_prompt, ratio_dir, shot_refs
 
 JOBS = "image_jobs.json"
 KAGGLE_MODEL = "black-forest-labs/FLUX.2-klein-4B"
@@ -26,18 +26,21 @@ def _ref_prompt(storyboard: dict, ref: dict) -> str:
 N_PER_RATIO = {"9:16": 3, "16:9": 2}  # the phone cut is the main submission; about 95 s an image on a T4
 
 
-def export_jobs(storyboard: dict, n: int | None = None) -> Path:
+def export_jobs(storyboard: dict, n: int | None = None, shots: list[str] | None = None,
+                ratios: list[str] | None = None) -> Path:
     jobs = []
     for ref in storyboard.get("references", []):
         w, h = ref["size"]
         jobs.append({"kind": "ref", "id": ref["id"], "seed": ref["seed"], "width": w, "height": h,
                      "prompt": _ref_prompt(storyboard, ref), "refs": [], "out": f"refs/{ref['id']}.png"})
     # 9:16 first for every shot, then 16:9, so a session that runs out of time still has the phone cut.
-    for ratio in storyboard["ratios"]:
+    for ratio in ratios or storyboard["ratios"]:
         w, h = SIZES[ratio]
         for shot in storyboard["shots"]:
-            prompt = build_prompt(storyboard, shot)
-            refs = [f"refs/{r}.png" for r in shot.get("refs", [])]
+            if shots and shot["id"] not in shots:
+                continue
+            prompt = build_prompt(storyboard, shot, ratio)
+            refs = [f"refs/{r}.png" for r in shot_refs(shot, ratio)]
             for seed in range(shot["seed"], shot["seed"] + (n or N_PER_RATIO[ratio])):
                 jobs.append({"kind": "shot", "id": shot["id"], "ratio": ratio, "seed": seed, "width": w,
                              "height": h, "prompt": prompt, "refs": refs,
@@ -85,6 +88,9 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--import", dest="results", help="folder downloaded from the notebook's output")
     ap.add_argument("-n", type=int, default=None)
+    ap.add_argument("--shots", nargs="*", help="only these shots, e.g. s05 s08")
+    ap.add_argument("--ratios", nargs="*", help="only these ratios, e.g. 9:16")
     a = ap.parse_args()
     sb = load_storyboard()
-    print(import_results(sb, Path(a.results)) if a.results else export_jobs(sb, n=a.n))
+    print(import_results(sb, Path(a.results)) if a.results
+          else export_jobs(sb, n=a.n, shots=a.shots, ratios=a.ratios))

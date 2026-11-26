@@ -138,3 +138,19 @@ def test_changing_a_reference_image_regenerates_the_shots_that_use_it(isolated_r
     Image.new("RGB", (1024, 768), (200, 10, 10)).save(ref)
     keyframes.run(sb, gen, sleep=lambda s: None)
     assert [c[1] for c in gen.calls[n:]] == [2, 2]
+
+
+def test_refs_by_ratio_overrides_the_references_for_that_ratio_only(isolated_root):
+    # Tall frames with the brothers sheet as a second reference came back as two stacked panels.
+    # The 9:16 version of such a shot can drop that reference without touching the 16:9 version.
+    sb, _ = _with_refs(isolated_root)
+    gen = RefGen()
+    keyframes.run(sb, gen, sleep=lambda s: None)
+    n = len(gen.calls)
+    sb["shots"][1]["refs_by_ratio"] = {"9:16": []}
+    keyframes.run(sb, gen, sleep=lambda s: None)
+    new = gen.calls[n:]
+    assert [(c[1], c[2]) for c in new] == [(2, (768, 1344))]  # only the 9:16 frame is remade
+    assert gen.refs[(2, (768, 1344))] == []
+    assert "image 0" not in new[0][0].lower()
+    assert len(gen.refs[(2, (1344, 768))]) == 1

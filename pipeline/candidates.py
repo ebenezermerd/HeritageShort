@@ -28,8 +28,8 @@ def run(storyboard: dict, n: int = 3, shots: list[str] | None = None,
         sid = shot["id"]
         if shots and sid not in shots:
             continue
-        prompt = build_prompt(storyboard, shot)
-        refs = ref_paths(storyboard, shot)
+        prompt = build_prompt(storyboard, shot, RATIO)
+        refs = ref_paths(storyboard, shot, RATIO)
         payload = ref_payload(refs)
         for seed in range(shot["seed"], shot["seed"] + n):
             path = common.ROOT / "outputs" / STAGE / sid / f"{seed}.png"
@@ -72,7 +72,7 @@ def pick(storyboard: dict, shot_id: str, ratio: str = RATIO, provider: str = "cl
     dest = common.ROOT / "outputs" / "keyframes" / ratio.replace(":", "x") / f"{shot_id}.png"
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(src, dest)
-    h = input_hash(build_prompt(storyboard, shot), seed, ratio, MODEL, *ref_paths(storyboard, shot))
+    h = input_hash(build_prompt(storyboard, shot, ratio), seed, ratio, MODEL, *ref_paths(storyboard, shot, ratio))
     Manifest("keyframes").put(f"{shot_id}@{ratio}", h, str(dest.relative_to(common.ROOT)))
     log_run("keyframes", shot_id, provider, MODEL, {"ratio": ratio, "picked_from": str(src.relative_to(common.ROOT))},
             seed, h, 0.0, "picked", error="chosen candidate kept as the keyframe")

@@ -176,6 +176,14 @@
             },
             "maxItems": 4
           },
+          "refs_by_ratio": {
+            "type": "object",
+            "properties": {
+              "9:16": {"type": "array", "items": {"type": "string"}, "maxItems": 4},
+              "16:9": {"type": "array", "items": {"type": "string"}, "maxItems": 4}
+            },
+            "additionalProperties": false
+          },
           "pick": {
             "type": "object",
             "additionalProperties": false,

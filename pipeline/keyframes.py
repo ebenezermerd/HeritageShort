@@ -33,8 +33,14 @@ def ratio_dir(ratio: str) -> str:
 REF_MAX = 496  # Cloudflare: every input image must be smaller than 512x512
 
 
-def ref_paths(storyboard: dict, shot: dict) -> list[Path]:
-    return [common.ROOT / "outputs" / "references" / f"{rid}.png" for rid in shot.get("refs", [])]
+def shot_refs(shot: dict, ratio: str) -> list[str]:
+    """The references for this shot in this ratio. `refs_by_ratio` overrides `refs` for one ratio:
+    tall frames given the brothers sheet as a second reference came back as stacked panels (E19)."""
+    return shot.get("refs_by_ratio", {}).get(ratio, shot.get("refs", []))
+
+
+def ref_paths(storyboard: dict, shot: dict, ratio: str) -> list[Path]:
+    return [common.ROOT / "outputs" / "references" / f"{rid}.png" for rid in shot_refs(shot, ratio)]
 
 
 def ref_payload(paths: list[Path]) -> list[bytes]:
@@ -54,7 +60,7 @@ def seed_for(shot: dict, ratio: str) -> int:
     return shot.get("pick", {}).get(ratio, shot["seed"])
 
 
-def build_prompt(storyboard: dict, shot: dict) -> str:
+def build_prompt(storyboard: dict, shot: dict, ratio: str) -> str:
     """Style block + the looks of the characters in this shot + the shot's own prompt."""
     by_id = {c["id"]: c for c in storyboard["characters"]}
     looks = "; ".join(
@@ -65,7 +71,7 @@ def build_prompt(storyboard: dict, shot: dict) -> str:
     if looks:
         parts.append("Characters: " + looks)
     by_ref = {r["id"]: r for r in storyboard.get("references", [])}
-    for i, rid in enumerate(shot.get("refs", [])):
+    for i, rid in enumerate(shot_refs(shot, ratio)):
         parts.append(f"Image {i} shows {by_ref[rid]['use']}; keep it consistent with image {i}")
     return ". ".join(p.rstrip(".") for p in parts) + "."
 
@@ -77,9 +83,9 @@ def run(storyboard: dict, gen: Callable[..., bytes] = klein,
     failed: list[str] = []
     for shot in storyboard["shots"]:
         sid = shot["id"]
-        prompt = build_prompt(storyboard, shot)
-        refs = ref_paths(storyboard, shot)
         for ratio in storyboard["ratios"]:
+            prompt = build_prompt(storyboard, shot, ratio)
+            refs = ref_paths(storyboard, shot, ratio)
             seed = seed_for(shot, ratio)
             size = SIZES[ratio]
             path = common.ROOT / "outputs" / STAGE / ratio_dir(ratio) / f"{sid}.png"
