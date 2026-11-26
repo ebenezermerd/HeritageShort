@@ -7,6 +7,9 @@ only that shot.
 
 Made for the 10 Academy AI-Content Generation challenge. The film is for the author's two brothers.
 
+**Watch it:** [Forty Springs on YouTube Shorts](https://youtube.com/shorts/LRUtHzUoK1I) (9:16, posted with
+YouTube's altered or synthetic content label).
+
 ## Run it
 
 You need: [uv](https://docs.astral.sh/uv/), FFmpeg with the `zoompan`, `sidechaincompress`, `loudnorm`
