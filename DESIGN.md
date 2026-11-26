@@ -77,6 +77,8 @@ second, and his favourite stunt was off the fallen tree.
 | Tesfa | "seems slow" (Beki and Amani disagreed) | The two silent holds trimmed by 1 s each (s01 7 to 6 s, s10 6 to 5 s); the film stays above 60 s |
 | Amani | Wants to see what the spring looks like | No change to the story; it confirms the work on one consistent spring picture (E19 onward) |
 
-## User test 2: the near-final cut
+## One test, not two
 
-Not run yet. Same listeners, near-final film, notes go here.
+There was one listener test, the radio cut above. Its notes changed four lines, the pace and the
+pictures, and the finished film was built from that storyboard. A second round on the finished film was
+planned but not run before the deadline.

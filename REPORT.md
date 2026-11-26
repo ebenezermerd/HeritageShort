@@ -1,8 +1,7 @@
 # Report: Forty Springs
 
 > Draft for Abenezer to read, correct and make his own. It is written from the repo's real logs and
-> notes. Anything in [square brackets] has not happened yet and must be filled in or cut, not left as
-> it is. The AI interview afterwards is about this work, so read every line and check it is true.
+> notes. The AI interview afterwards is about this work, so read every line and check it is true.
 
 ## 1. What I set out to make, and for whom
 
@@ -26,7 +25,6 @@ s06 line and the s06 picture. He also found the shouted "whoa" "too harsh" and t
 found the same "whoa" "so much refreshing", and Beki and Amani liked the pace. I took a lighter second
 take of the "whoa" and trimmed the two silent shots by a second each, and left the rest. Amani's last
 answer was that they wanted to see what the spring looks like, which is what the picture work was for.
-[Add test 2 here if the brothers watch the finished film before you submit.]
 
 ## 3. The hardest problem
 
