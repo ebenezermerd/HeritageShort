@@ -1,0 +1,38 @@
+{
+  "s01": {
+    "hash": "0aa95686a5905eaf7ddaf74c9387a19238d5e94ad4023cbf588c8b2c925479ef",
+    "path": "outputs/narration/gemini/s01.wav"
+  },
+  "s02": {
+    "hash": "1dcdab690dc8259dbb84a1946359c6f54bb31989e2c763226f49e9ece5a42564",
+    "path": "outputs/narration/gemini/s02.wav"
+  },
+  "s03": {
+    "hash": "270f9bd516018b757d3e6fad7a97b8aa0d390b18757c26ad19728aac9099cd63",
+    "path": "outputs/narration/gemini/s03.wav"
+  },
+  "s04": {
+    "hash": "142d8647f0b279f7755b3d12b225c8ae07286e5c71797e17a286c379347b51cf",
+    "path": "outputs/narration/gemini/s04.wav"
+  },
+  "s05": {
+    "hash": "5c5ea1286c045d512ca20754c8d3138b388464bc8a5b121d58ae417ed483d354",
+    "path": "outputs/narration/gemini/s05.wav"
+  },
+  "s06": {
+    "hash": "c73b4d751979e25756a8b15ba75233d6e10489be176d1041566574b92356df88",
+    "path": "outputs/narration/gemini/s06.wav"
+  },
+  "s07": {
+    "hash": "e8517d7bdf8c44e1109ef9966111ca777f14805769d4be7a8b65db796d076fca",
+    "path": "outputs/narration/gemini/s07.wav"
+  },
+  "s08": {
+    "hash": "d34d1b6437f9ce57ce153b00e0df45915882523258901434dbf3b5060a0e51de",
+    "path": "outputs/narration/gemini/s08.wav"
+  },
+  "s09": {
+    "hash": "de23adc0904d107a8b8abec77bc6a50e1a53bad68e99046906a32d33215e0a8a",
+    "path": "outputs/narration/gemini/s09.wav"
+  }
+}
