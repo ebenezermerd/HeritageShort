@@ -23,7 +23,10 @@ def _ref_prompt(storyboard: dict, ref: dict) -> str:
     return f"{storyboard['style_block'].rstrip('.')}. {ref['prompt']}"
 
 
-def export_jobs(storyboard: dict, n: int = 3) -> Path:
+N_PER_RATIO = {"9:16": 3, "16:9": 2}  # the phone cut is the main submission; about 95 s an image on a T4
+
+
+def export_jobs(storyboard: dict, n: int | None = None) -> Path:
     jobs = []
     for ref in storyboard.get("references", []):
         w, h = ref["size"]
@@ -35,7 +38,7 @@ def export_jobs(storyboard: dict, n: int = 3) -> Path:
         for shot in storyboard["shots"]:
             prompt = build_prompt(storyboard, shot)
             refs = [f"refs/{r}.png" for r in shot.get("refs", [])]
-            for seed in range(shot["seed"], shot["seed"] + n):
+            for seed in range(shot["seed"], shot["seed"] + (n or N_PER_RATIO[ratio])):
                 jobs.append({"kind": "shot", "id": shot["id"], "ratio": ratio, "seed": seed, "width": w,
                              "height": h, "prompt": prompt, "refs": refs,
                              "out": f"shots/{ratio_dir(ratio)}/{shot['id']}/{seed}.png"})
@@ -81,7 +84,7 @@ if __name__ == "__main__":
 
     ap = argparse.ArgumentParser()
     ap.add_argument("--import", dest="results", help="folder downloaded from the notebook's output")
-    ap.add_argument("-n", type=int, default=3)
+    ap.add_argument("-n", type=int, default=None)
     a = ap.parse_args()
     sb = load_storyboard()
     print(import_results(sb, Path(a.results)) if a.results else export_jobs(sb, n=a.n))

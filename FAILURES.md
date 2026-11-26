@@ -208,3 +208,8 @@ images, and `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`.
 (5.2 GiB asked). The references were passed at 1024x768, so each added thousands of tokens, and on a T4
 in bf16 PyTorch uses its plain attention, whose memory grows with the square of the token count. The
 references are now shrunk to fit 496 px, the same limit Cloudflare uses, before they go in.
+
+**Third time.** With small references the first shot worked (about 95 s an image), then the first shot
+with two references ran GPU 1 out by 816 MB. `device_map="balanced"` had put the transformer and the VAE
+together on GPU 1. Switched to `enable_model_cpu_offload()`. To fit the day, 16:9 now gets 2 options per
+shot instead of 3 (the 9:16 phone cut is the main submission).

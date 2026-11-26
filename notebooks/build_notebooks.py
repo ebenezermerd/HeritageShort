@@ -116,14 +116,12 @@ jobs = json.loads(JOBS.read_text())
 print(len(jobs), "jobs,", sum((OUT / j["out"]).exists() for j in jobs), "already done")
 
 MODEL = "black-forest-labs/FLUX.2-klein-4B"  # Apache 2.0, not gated
-try:  # two T4s: spread the text encoder and the transformer over both GPUs
-    pipe = Flux2KleinPipeline.from_pretrained(MODEL, torch_dtype=torch.bfloat16, device_map="balanced")
-    placement = "balanced"
-except Exception as e:
-    print("balanced placement failed, using CPU offload:", e)
-    pipe = Flux2KleinPipeline.from_pretrained(MODEL, torch_dtype=torch.bfloat16)
-    pipe.enable_model_cpu_offload()
-    placement = "cpu_offload"
+# CPU offload, not device_map="balanced": balanced put the transformer and the VAE together on GPU 1,
+# which ran out of memory on shots with two references (FAILURES #12). Offload gives the transformer a
+# whole 15 GB T4 to itself, for a few seconds of weight transfer per image.
+pipe = Flux2KleinPipeline.from_pretrained(MODEL, torch_dtype=torch.bfloat16)
+pipe.enable_model_cpu_offload()
+placement = "cpu_offload"
 try:  # the VAE decode ran out of memory on a T4 at full size (FAILURES #12): decode in tiles
     pipe.vae.enable_tiling()
 except Exception as e:
