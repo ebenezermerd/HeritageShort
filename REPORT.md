@@ -6,7 +6,7 @@
 
 ## 1. What I set out to make, and for whom
 
-A 65 second painted short, "Forty Springs", about me and my two brothers, Tesfa and Beki, swimming at
+A 63 second painted short, "Forty Springs", about me and my two brothers, Tesfa and Beki, swimming at
 a spring in Arba Minch when we were 16, 17 and 19. Arba Minch means "forty springs". It is for my two
 brothers, on their phones, and I wanted them to laugh first and miss it second. The film is painted
 and AI-made, narrated in English by a stock voice, with English subtitles, a score and a card at the
@@ -15,51 +15,74 @@ every stage and one command, `make film`, rebuilds both the vertical and horizon
 
 ## 2. What I learned from my audience
 
-[Fill in after the two listener tests with Tesfa, Beki and Amani. Use their own words from
-`DESIGN.md`: where they smiled, what confused them, what you changed because of it. Until then this
-section has nothing true to say, and the brief grades exactly this.]
+I played a radio cut (the real narration and score on a black screen, 62 s) to Beki, Tesfa and my friend
+Amani, who has never been to the spring, and asked four questions over WhatsApp. Their answers are
+copied word for word in `DESIGN.md`. All three smiled and nobody found a line confusing. Hearing our
+Amharic nicknames in an English voice made all three laugh, so the names stayed. Beki smiled at
+jumping first and told me why: he did it every time, "even i am shaking", to beat his fear. That is
+now in his line. Tesfa corrected me twice: he was "not always the second to jump", so his line became
+"Then Tesfa. Most days.", and his favourite stunt was jumping off the fallen tree, which is now both the
+s06 line and the s06 picture. He also found the shouted "whoa" "too harsh" and the pace "slow"; Amani
+found the same "whoa" "so much refreshing", and Beki and Amani liked the pace. I took a lighter second
+take of the "whoa" and trimmed the two silent shots by a second each, and left the rest. Amani's last
+answer was that they wanted to see what the spring looks like, which is what the picture work was for.
+[Add test 2 here if the brothers watch the finished film before you submit.]
 
 ## 3. The hardest problem
 
-Gemini's free text-to-speech allows 10 requests a day per model. I did not know that, and I spent
-the whole allowance by early afternoon on two smoke tests, one nine-line narration pass, a prompt
-experiment and my own retries. After that every call returned `429 RESOURCE_EXHAUSTED`. `runs.jsonl`
-shows it plainly: 12 successful speech calls (10 narration, 2 smoke) and 38 failed narration calls. My three prompt-experiment calls came from a throwaway script that did not log, so they are not in that count.
+Making the people look right. The first full set of pictures had a boy with four hands, legs that did
+not match, bodies that looked lifeless, and a spring that changed from shot to shot. The first check was
+at thumbnail size and missed it; I saw it when I looked at full size (FAILURES #8). Three things fixed it, and each
+one broke something new. First, I stopped asking the model to draw hands and legs it could not hold
+together: most shots now show the brothers from behind, far away, or with only heads above the water.
+Second, I gave the model two reference pictures, one of the spring and one of the three brothers, so
+every shot is the same place and the same three people (E19). Cloudflare's daily image quota then
+stopped resetting, so I moved generation to a free Kaggle T4, where it ran out of memory four times
+before it worked: at the decoder, in attention, in how the model was split across two GPUs, and in the
+end because this GPU has no fast attention kernel for bfloat16, fixed by shrinking the reference
+pictures to 320 px (FAILURES #12). Third, the tall phone frames given both references came back as two
+pictures stacked in one frame, so those shots now use only the spring at 9:16, and the one shot that
+still drew a fourth boy uses a slice of its correct 16:9 picture instead. Every figure in the final 20
+frames was checked cropped at full size.
 
-I checked the error body, then tried the four other Gemini speech models on my key. They are in the
-model list but all returned 404, so there was no second voice to fall back on. What I did: kept the
-pipeline moving with a clearly labelled local placeholder voice (macOS Daniel, logged as provider
-`macos`), used it for the first listener test and the first full build, and planned the real Gemini
-narration for after the daily reset. [Fill in: when the reset came, whether the Gemini narration ran,
-and how it compares by ear with the placeholder.] The lesson is in `FAILURES.md` #4.
+The voice was the other hard part. Gemini's free speech allows 10 requests a day, and I spent them by
+early afternoon on 25 Nov (FAILURES #4). The full Gemini narration ran that evening with a second key
+of my own, and the rewritten lines the next morning. Then every line ended in a "ksh" noise: Gemini had
+started returning a complete WAV file, and the pipeline wrapped it in a second WAV header, so the file's
+provenance data played as sound (FAILURES #11). The fix unwraps the old files without new requests.
 
 ## 4. A suggested practice that helped, and one that did not
 
 **Helped: log every call.** My instinct was to log errors only. Logging every call, with model,
-parameters, seed and latency, is what let me count the successes against 38 failures, see that image
-generation averaged 8.9 s, and fill in `COSTS.md` from data instead of guesses.
+parameters, seed and latency, is what let me count successes against failures, see that a Kaggle image
+took 99 s against 9 s on Cloudflare, and fill in `COSTS.md` from data instead of guesses.
 
 **Did not help (here): one narration file per line.** It makes a retake cheap in time, and it let me
-change one line in the walkthrough. But with a limit of 10 requests a day, nine lines cost nine
-requests, where one request for the whole script would have cost one. A per-line file was the right
-idea for compute and the wrong one for this quota. I kept it because it makes the one-shot
-regeneration demo possible, but it nearly cost me the film's voice.
+change four lines after the listener test without touching the rest. But with a limit of 10 requests a
+day, nine lines cost nine requests, where one request for the whole script would have cost one. I kept
+it because it makes the one shot regeneration demo possible, but it nearly cost me the film's voice.
 
-**One I skipped:** the reference sheet before keyframes. I used text descriptions of each brother
-instead and judged consistency by eye (E02). [If you did the likeness test, say whether a reference
-image did better.]
+**Helped in the end: the reference sheet.** I skipped it at first and used text descriptions of each
+brother (E02). That is what gave me inconsistent people. Adding reference pictures of the spring and the
+brothers is what made the shots look like one place and one family (E19).
 
 ## 5. Work beyond the floor
 
 - **A measured look at loudness (E06 to E08).** The film came out at -15.5 LUFS instead of the -14
   I had set, with no error. I read loudnorm's own report, found it had fallen into a fallback mode
   because the loudness range was 17.2 LU, and fixed it with a limiter chosen from three measured
-  settings. I could not reproduce it with a test, and I said so in the docs.
+  settings. The final film measures -14.0 LUFS in both ratios.
 - **Two image models, compared (E05).** schnell could not make a 9:16 image at all.
-- [Ken Burns against Wan 2.2 on the same shot, and the likeness test, if they get done.]
+- **A second image route.** When Cloudflare's quota stopped resetting, the same model ran on Kaggle
+  from the same job list, and its pictures came back into the same cache, so `make film` still makes
+  no new image calls.
+- **A recorded listener test that changed the film (DESIGN.md).** Four storyboard changes came straight
+  from what my brothers and Amani wrote.
 
 ## 6. What I would build next
 
-Reference sheets for the brothers, and a real likeness test with their written yes to the photos. One
-narration request for the whole script, split by silence, so a daily limit of 10 is not a problem.
-Wan clips in 16:9 too. And a script stage with Gemini text, once its 503s stop (FAILURES #3).
+Wan 2.2 on the three scenery shots, which I planned but did not run (E20): the notebook is written but
+untested, and I chose a finished film over an untried GPU job on the last day. One narration request for
+the whole script, split by silence, so a daily limit of 10 is not a problem. A likeness test with my
+brothers' written yes to their photos. And a script stage with Gemini text, once its 503s stop
+(FAILURES #3).
