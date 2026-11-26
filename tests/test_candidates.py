@@ -67,8 +67,8 @@ def test_picked_candidate_becomes_the_9x16_keyframe_without_a_new_call(isolated_
     out = candidates.run(SB, n=3, gen=gen, sleep=lambda s: None)
     chosen = out["s02"][1]
     sb = json.loads(json.dumps(SB))
-    sb["shots"][1]["seed"] = 21
-    candidates.pick(sb, "s02", 21)
+    sb["shots"][1]["pick"] = {"9:16": 21}
+    candidates.pick(sb, "s02", "9:16")
     kf_gen = FakeGen()
     keyframes.run(sb, kf_gen, sleep=lambda s: None)
     nine = (isolated_root / "outputs/keyframes/9x16/s02.png").read_bytes()

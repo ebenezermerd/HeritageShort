@@ -49,6 +49,11 @@ def ref_payload(paths: list[Path]) -> list[bytes]:
     return out
 
 
+def seed_for(shot: dict, ratio: str) -> int:
+    """The picked candidate's seed for this ratio, or the shot's seed."""
+    return shot.get("pick", {}).get(ratio, shot["seed"])
+
+
 def build_prompt(storyboard: dict, shot: dict) -> str:
     """Style block + the looks of the characters in this shot + the shot's own prompt."""
     by_id = {c["id"]: c for c in storyboard["characters"]}
@@ -71,10 +76,11 @@ def run(storyboard: dict, gen: Callable[..., bytes] = klein,
     result: dict[str, dict[str, Path]] = {}
     failed: list[str] = []
     for shot in storyboard["shots"]:
-        sid, seed = shot["id"], shot["seed"]
+        sid = shot["id"]
         prompt = build_prompt(storyboard, shot)
         refs = ref_paths(storyboard, shot)
         for ratio in storyboard["ratios"]:
+            seed = seed_for(shot, ratio)
             size = SIZES[ratio]
             path = common.ROOT / "outputs" / STAGE / ratio_dir(ratio) / f"{sid}.png"
             h = input_hash(prompt, seed, ratio, MODEL, *refs)

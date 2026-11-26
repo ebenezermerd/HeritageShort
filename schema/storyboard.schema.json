@@ -175,6 +175,19 @@
               "type": "string"
             },
             "maxItems": 4
+          },
+          "pick": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Which candidate seed became the keyframe, per ratio (overrides seed for that ratio).",
+            "properties": {
+              "9:16": {
+                "type": "integer"
+              },
+              "16:9": {
+                "type": "integer"
+              }
+            }
           }
         }
       }

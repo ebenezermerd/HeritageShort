@@ -101,6 +101,62 @@ save("10_acestep", [
     code("!cd /kaggle/working/ace && MPLBACKEND=Agg uv run python /kaggle/working/gen_music.py"),
 ])
 
+# ---------------------------------------------------------------- 15 keyframes
+KEYFRAME_SCRIPT = '''
+import json, shutil, time
+from pathlib import Path
+import torch
+from PIL import Image
+from diffusers import Flux2KleinPipeline
+
+JOBS = next(Path("/kaggle/input").rglob("image_jobs.json"))  # from `python -m pipeline.kaggle_images`
+OUT = Path("/kaggle/working/images")
+LOG = Path("/kaggle/working/notebook_log.jsonl")
+jobs = json.loads(JOBS.read_text())
+print(len(jobs), "jobs,", sum((OUT / j["out"]).exists() for j in jobs), "already done")
+
+MODEL = "black-forest-labs/FLUX.2-klein-4B"  # Apache 2.0, not gated
+try:  # two T4s: spread the text encoder and the transformer over both GPUs
+    pipe = Flux2KleinPipeline.from_pretrained(MODEL, torch_dtype=torch.bfloat16, device_map="balanced")
+    placement = "balanced"
+except Exception as e:
+    print("balanced placement failed, using CPU offload:", e)
+    pipe = Flux2KleinPipeline.from_pretrained(MODEL, torch_dtype=torch.bfloat16)
+    pipe.enable_model_cpu_offload()
+    placement = "cpu_offload"
+
+for job in jobs:
+    out = OUT / job["out"]
+    if out.exists():
+        continue
+    kwargs = dict(prompt=job["prompt"], width=job["width"], height=job["height"], guidance_scale=1.0,
+                  num_inference_steps=4, generator=torch.Generator("cuda").manual_seed(job["seed"]))
+    if job["refs"]:
+        kwargs["image"] = [Image.open(OUT / r).convert("RGB") for r in job["refs"]]
+    start = time.time()
+    image = pipe(**kwargs).images[0]
+    seconds = time.time() - start
+    out.parent.mkdir(parents=True, exist_ok=True)
+    image.save(out)
+    with LOG.open("a") as f:
+        f.write(json.dumps({"stage": "keyframes", "model": MODEL, "out": job["out"], "seed": job["seed"],
+                            "seconds": round(seconds, 1), "placement": placement}) + "\\n")
+    print(job["out"], round(seconds, 1), "s")
+
+shutil.make_archive("/kaggle/working/images_out", "zip", OUT)
+print("done: download /kaggle/working/images_out.zip and notebook_log.jsonl")
+'''
+
+save("15_keyframes", [
+    md("# 15 Keyframes: FLUX.2 klein 4B on a Kaggle T4\nUsed when Cloudflare's daily image quota is spent. "
+       "Settings: GPU T4 x2, Internet on, Persistence Files only. Add the dataset that holds "
+       "`image_jobs.json` (from `python -m pipeline.kaggle_images`). It saves each image as it goes and "
+       "skips finished ones, so after a timeout just run it again."),
+    code("!pip install -q -U diffusers transformers accelerate"),
+    code("%%writefile /kaggle/working/gen_keyframes.py\n" + KEYFRAME_SCRIPT.strip()),
+    code("!python /kaggle/working/gen_keyframes.py"),
+])
+
 # ---------------------------------------------------------------- 20 wan
 save("20_wan", [
     md("# 20 Wan 2.2: moving shots from keyframes\nSettings: GPU T4 x2, Internet on. Add the dataset "
