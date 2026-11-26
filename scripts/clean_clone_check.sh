@@ -15,7 +15,7 @@ for f in outputs/final_9x16.mp4 outputs/final_16x9.mp4; do
   secs=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$f")
   awk -v s="$secs" -v f="$f" 'BEGIN { if (s < 60 || s > 90) { print f ": " s " s is outside 60 to 90"; exit 1 } else print f ": " s " s ok" }'
 done
-calls=$(tail -n +"$((before + 1))" runs.jsonl | grep -v '"provider": "ffmpeg"' | wc -l | tr -d ' ')
+calls=$(tail -n +"$((before + 1))" runs.jsonl | { grep -v '"provider": "ffmpeg"' || true; } | wc -l | tr -d ' ')
 if [ "$calls" != "0" ]; then
   echo "the build made $calls model calls; a clean clone should make none"
   tail -n +"$((before + 1))" runs.jsonl | grep -v '"provider": "ffmpeg"'
