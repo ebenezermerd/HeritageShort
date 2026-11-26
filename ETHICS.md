@@ -2,27 +2,26 @@
 
 ## Consent
 
-The film shows three real people: Abenezer (Abeni, the author), Tesahun (Tesfa)
-and Bereket (Beki), his brothers. They are shown as painted, AI-made teenage
-versions of themselves. Nobody's voice is cloned: the narration is a stock
-voice.
+The film shows three real people: me, Abenezer (Abeni), and my brothers Tesahun
+(Tesfa) and Bereket (Beki). We are shown as painted, AI-made teenage versions of
+ourselves. Nobody's voice is cloned: the narration is a stock voice.
 
-Abeni asked both brothers by chat, in a message saying the film is AI-made,
+I asked both of my brothers by chat, in a message saying the film is AI-made,
 paints them, might use their photos as a reference, and will be posted publicly
 with an AI label. Their replies, copied word for word:
 
 - **Tesfa:** "ofcourse you can use it we're brothers."
 - **Beki:** "Okay you may use mine no problems I'm okay with it"
 
-Abeni then asked each of them again about uploading their photos to a private
-Kaggle dataset to help the model match their faces, and told me both said yes. I
-never had their exact words for that, so I did not use it: **no photo of any
-person was uploaded anywhere.** The "brothers" reference picture that keeps the
-three figures consistent (E19) was itself generated from a text description
-(first names, ages, warm brown skin, hair, height), not from a photo. So the film
-rests only on the two messages quoted above.
+I then asked each of them again about uploading their photos to a private
+Kaggle dataset to help the model match their faces, and both said yes. I did not
+keep their exact words for that, so I did not use it: **no photo of any person
+was uploaded anywhere.** The "brothers" reference picture that keeps the three
+figures consistent (E19) was itself generated from a text description (first
+names, ages, warm brown skin, hair, height), not from a photo. So the film rests
+only on the two messages quoted above.
 
-Abeni is the author and consents for himself.
+I am the author, and I consent for myself.
 
 ## What leaves this computer
 
