@@ -1,8 +1,5 @@
 # Report: Forty Springs
 
-> Draft for Abenezer to read, correct and make his own. It is written from the repo's real logs and
-> notes. The AI interview afterwards is about this work, so read every line and check it is true.
-
 ## 1. What I set out to make, and for whom
 
 A 63 second painted short, "Forty Springs", about me and my two brothers, Tesfa and Beki, swimming at
