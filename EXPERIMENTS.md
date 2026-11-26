@@ -272,6 +272,10 @@ two of three for s02, came back as two pictures stacked in one frame, one showin
 the brothers lined up like the sheet. The same shots at 16:9 were single pictures, and no shot with
 the spring as its only reference was ever split. So a tall frame plus a character sheet reads to the
 model as "make a page with two panels". Fix: `refs_by_ratio` lets a shot use only the spring at 9:16
-and keep both references at 16:9; the brothers' looks stay in the text prompt. Picked 17 of 20 frames
-now; s05, s08 and s10 at 9:16 are being remade with the spring alone (a test pins that the override
-changes only the one ratio, so the picked 16:9 frames are not regenerated).
+and keep both references at 16:9; the brothers' looks stay in the text prompt. Picked 17 of 20 frames,
+then remade s05, s08 and s10 at 9:16 with the spring alone (9 images, 102 to 126 s each; a test pins
+that the override changes only the one ratio, so the picked 16:9 frames were not regenerated). No
+panels this time. s05 and s10 came out right. Every s08 candidate drew a fourth boy standing behind
+the three heads, though, so the 9:16 s08 is a full-height slice of the picked 16:9 frame (which has
+exactly three), scaled up 1.75 times (`crop_from_wide` in the storyboard, logged as a pick with its
+source). It is softer than the others, but it shows the right number of brothers.

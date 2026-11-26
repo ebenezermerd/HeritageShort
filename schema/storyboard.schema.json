@@ -176,6 +176,14 @@
             },
             "maxItems": 4
           },
+          "crop_from_wide": {
+            "type": "object",
+            "properties": {
+              "9:16": {"type": "object", "properties": {"x": {"type": "integer", "minimum": 0}},
+                       "required": ["x"], "additionalProperties": false}
+            },
+            "additionalProperties": false
+          },
           "refs_by_ratio": {
             "type": "object",
             "properties": {

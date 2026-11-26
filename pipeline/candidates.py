@@ -10,6 +10,8 @@ import shutil
 from pathlib import Path
 from typing import Callable
 
+from PIL import Image
+
 from pipeline import common
 from pipeline.common import Manifest, input_hash, log_run, with_retries
 from pipeline.keyframes import MODEL, SIZES, build_prompt, klein, ref_paths, ref_payload, seed_for, to_png
@@ -66,15 +68,24 @@ def pick(storyboard: dict, shot_id: str, ratio: str = RATIO, provider: str = "cl
     The file itself is kept: Cloudflare's klein does not reproduce an image from a seed (E14)."""
     shot = next(s for s in storyboard["shots"] if s["id"] == shot_id)
     seed = seed_for(shot, ratio)
-    src = candidate_path(shot_id, seed, ratio)
+    crop = shot.get("crop_from_wide", {}).get(ratio)
+    src = candidate_path(shot_id, seed_for(shot, "16:9"), "16:9") if crop else candidate_path(shot_id, seed, ratio)
     if not src.exists():
         raise FileNotFoundError(src)
     dest = common.ROOT / "outputs" / "keyframes" / ratio.replace(":", "x") / f"{shot_id}.png"
     dest.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(src, dest)
+    if crop:
+        # A full-height slice of the 16:9 picture, scaled up to the 9:16 size (E19, s08).
+        w, h = SIZES[ratio]
+        wide = Image.open(src).convert("RGB")
+        cut_w = round(wide.height * w / h)
+        wide.crop((crop["x"], 0, crop["x"] + cut_w, wide.height)).resize((w, h), Image.LANCZOS).save(dest)
+    else:
+        shutil.copyfile(src, dest)
     h = input_hash(build_prompt(storyboard, shot, ratio), seed, ratio, MODEL, *ref_paths(storyboard, shot, ratio))
     Manifest("keyframes").put(f"{shot_id}@{ratio}", h, str(dest.relative_to(common.ROOT)))
-    log_run("keyframes", shot_id, provider, MODEL, {"ratio": ratio, "picked_from": str(src.relative_to(common.ROOT))},
+    log_run("keyframes", shot_id, provider, MODEL, {"ratio": ratio, "picked_from": str(src.relative_to(common.ROOT)),
+                                                  **({"crop_from": str(src.relative_to(common.ROOT)), "x": crop["x"]} if crop else {})},
             seed, h, 0.0, "picked", error="chosen candidate kept as the keyframe")
     return dest
 
@@ -91,7 +102,7 @@ if __name__ == "__main__":
     if a.pick:
         sb = load_storyboard()
         for shot in sb["shots"]:
-            for ratio in shot.get("pick") or {RATIO: shot["seed"]}:
+            for ratio in {**(shot.get("pick") or {RATIO: shot["seed"]}), **shot.get("crop_from_wide", {})}:
                 print("picked", pick(sb, shot["id"], ratio, provider=a.provider))
         raise SystemExit
     res = run(load_storyboard(), n=a.n, shots=a.shots or None)

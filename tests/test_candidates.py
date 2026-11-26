@@ -74,3 +74,28 @@ def test_picked_candidate_becomes_the_9x16_keyframe_without_a_new_call(isolated_
     nine = (isolated_root / "outputs/keyframes/9x16/s02.png").read_bytes()
     assert nine == chosen.read_bytes()
     assert (768, 1344) not in {c[1] for c in kf_gen.calls if c[0] == 21}
+
+
+def test_a_9x16_keyframe_can_be_cut_from_the_picked_16x9_candidate(isolated_root):
+    # s08: every 9:16 candidate drew a fourth boy; the 16:9 pick had exactly three. A logged crop
+    # of the 16:9 file becomes the 9:16 keyframe, and the keyframe stage then makes no call for it.
+    from pipeline import keyframes
+
+    wide = candidates.candidate_path("s02", 20, "16:9")
+    wide.parent.mkdir(parents=True)
+    img = Image.new("RGB", (1344, 768), (0, 0, 0))
+    img.paste((255, 0, 0), (500, 0, 939, 768))  # the red band (768 x 4:7 = 439 wide) is the part to keep
+    img.save(wide)
+    sb = json.loads(json.dumps(SB))
+    sb["shots"][1]["pick"] = {"16:9": 20}
+    sb["shots"][1]["crop_from_wide"] = {"9:16": {"x": 500}}
+    candidates.pick(sb, "s02", "16:9")
+    dest = candidates.pick(sb, "s02", "9:16")
+    out = Image.open(dest).convert("RGB")
+    assert out.size == (768, 1344)
+    assert out.getpixel((10, 10)) == (255, 0, 0) and out.getpixel((758, 1334)) == (255, 0, 0)
+    row = [json.loads(x) for x in (isolated_root / "runs.jsonl").read_text().splitlines()][-1]
+    assert row["shot_id"] == "s02" and row["params"]["crop_from"].endswith("16x9/20.png")
+    kf_gen = FakeGen()
+    keyframes.run(sb, kf_gen, sleep=lambda s: None)
+    assert not [c for c in kf_gen.calls if c[0] == 20]
