@@ -2,7 +2,7 @@
 
 ## Who it is for and what it should do
 
-**Audience.** Tesfa and Beki, Abeni's two brothers, watching on a phone. Anyone
+**Audience.** Tesfa and Beki, my two brothers, watching on a phone. Anyone
 else who sees it is a bonus.
 
 **Intent.** The three of them swam at a spring in Arba Minch when they were
@@ -13,11 +13,11 @@ longing second, never sad.
 **Where they watch.** On a phone, so vertical 9:16 is the main version and
 16:9 is the second.
 
-## What Abeni remembered (his words, my notes)
+## What I remember
 
-Beki, the oldest, jumped first, then Tesfa, then Abeni last. They splashed each
+Beki, the oldest, jumped first, then Tesfa, then me last. We splashed each
 other, did flips and tricks from the tree beside the water, and shouted "Whoa,
-whoa, whoa" a lot. They were just having fun. Abeni said not to over-specify
+whoa, whoa" a lot. We were just having fun. I did not want to over-specify
 the memory, so the film stays close to that and nothing more.
 
 ## Every shot and why it is there
@@ -51,7 +51,7 @@ them, including the spelling.
 >
 > well i speak faster and hit the memory flash fast but the story telling while it is good but it seems slow to me
 
-**Amani (Abeni's friend, never went to the spring)**
+**Amani (my friend, never went to the spring)**
 > the story telling made it look like funny to call amharic names through english so it made me funny and the way the narror laughs sounds so much refreshing wow wow wooooh
 >
 > i don't hear any confusion being made
@@ -73,7 +73,7 @@ second, and his favourite stunt was off the fallen tree.
 | Beki | Smiled at "jumped first"; did it every time, cold and shaking, to beat his fear | s03 line now carries his detail: "Beki, the oldest, always jumped first, even when the water was cold." |
 | Tesfa | "I am not always the second to jump" | s04 line: "Then Tesfa. Most days." |
 | Tesfa | Loved "jumping from fallen tree to the water" | s06 line: "flips off the fallen tree"; s06 picture: a flip off the fallen trunk |
-| Tesfa, Amani | The "whoa" is harsh (Tesfa) / refreshing (Amani) | s08 retaken once with a lighter, exclaimed "Whoa! Whoa! Whoa!"; Abeni chooses between the takes |
+| Tesfa, Amani | The "whoa" is harsh (Tesfa) / refreshing (Amani) | s08 retaken once with a lighter, exclaimed "Whoa! Whoa! Whoa!"; I chose that lighter take |
 | Tesfa | "seems slow" (Beki and Amani disagreed) | The two silent holds trimmed by 1 s each (s01 7 to 6 s, s10 6 to 5 s); the film stays above 60 s |
 | Amani | Wants to see what the spring looks like | No change to the story; it confirms the work on one consistent spring picture (E19 onward) |
 
