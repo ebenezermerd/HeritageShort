@@ -5,7 +5,7 @@ English, with English subtitles, a score, and an end card saying it was made wit
 small pipeline: one file, `storyboard.json`, drives every stage, and changing one shot regenerates
 only that shot.
 
-Made for the 10 Academy AI-Content Generation challenge. The film is for the author's two brothers.
+Made for the 10 Academy AI-Content Generation challenge. The film is for my two brothers.
 
 **Watch it:** [Forty Springs on YouTube Shorts](https://youtube.com/shorts/LRUtHzUoK1I) (9:16, posted with
 YouTube's altered or synthetic content label).
