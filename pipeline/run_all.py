@@ -10,8 +10,12 @@ from typing import Callable
 from pipeline import assemble, common, keyframes, music, narrate, providers, references, shots
 
 
+KEPT = ("keyframes", "references", "narration/gemini")
+
+
 def restore_assets() -> None:
-    """Copy the committed Wan clips and music from assets/ into outputs/ when not already there."""
+    """Copy committed files from assets/ into outputs/ when not already there: Wan clips, the score,
+    and the chosen keyframes, references and narration."""
     for sub in ("shots", "music"):
         src, dst = common.ROOT / "assets" / sub, common.ROOT / "outputs" / sub / "raw"
         if not src.exists():
@@ -24,6 +28,18 @@ def restore_assets() -> None:
             target = common.ROOT / "outputs" / "music" / "score.wav" if (sub, f.name) == ("music", "score.wav") \
                 else dst / f.name
             if not target.exists():
+                shutil.copyfile(f, target)
+    # The chosen pictures and the Gemini voice cannot be made again exactly (klein on Cloudflare does
+    # not repeat a seed, E14; Gemini allows 10 requests a day), so they are restored with their
+    # manifests and every stage sees them as cached.
+    for sub in KEPT:
+        src = common.ROOT / "assets" / sub
+        if not src.exists():
+            continue
+        for f in sorted(src.rglob("*")):
+            target = common.ROOT / "outputs" / sub / f.relative_to(src)
+            if f.is_file() and not target.exists():
+                target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(f, target)
 
 
