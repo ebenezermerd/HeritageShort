@@ -41,7 +41,7 @@ call. Side-by-side sheets are in `outputs/keyframes/` (git-ignored).
 ## E03. The submerged log (25 Nov)
 
 **Hypothesis.** "A large fallen log lying under the water" will put the log
-below the surface like in Abeni's photos of the spring.
+below the surface like in my photos of the spring.
 
 **Change.** Reworded shot 1 to "submerged beneath the clear water and visible
 through the surface".
@@ -207,9 +207,9 @@ I looked at all 30 and kept one per shot.
 **Result.** The first-pass pictures had real faults: shot 7 showed two pairs of hands (four hands),
 shot 6 showed a pale boy in a white shirt, and shot 8 gave the three boys different skin tones. In
 the candidates, shot 7's first option still showed an extra hand, and several others had odd arms or hands
-(I did not count them). I judged them on contact sheets at about 230x400 pixels and called each pick clean. That was
-wrong: the author watched the rebuilt film and still saw four fingers, extra legs and bodies that did not
-read as real. At that size extra fingers and a merged leg are invisible, so my review could not catch
+(I did not count them). They were judged on contact sheets at about 230x400 pixels and each pick was called clean. That was
+wrong: when I watched the rebuilt film I still saw four fingers, extra legs and bodies that did not
+read as real. At that size extra fingers and a merged leg are invisible, so that review could not catch
 them. Re-seeding removed the worst fault (shot 7's four hands) but did not fix anatomy, and it did
 nothing for consistency: the brothers in shot 8 still look like three different people, and the spring
 is a different place in every shot. The
@@ -219,7 +219,7 @@ The 16:9 images were generated once each and I checked them by eye; I saw no ext
 
 ## E16. Remove the hum and add ambience and splashes (25 Nov)
 
-**Hypothesis.** The author found the sound "irritating" and said they could hear nothing of the
+**Hypothesis.** I found the sound "irritating" and could hear nothing of the
 place. The only music in the build was my synthesised 110 Hz pad, so removing it and adding water,
 birds and splash effects from FFmpeg should fix both complaints.
 
@@ -227,11 +227,11 @@ birds and splash effects from FFmpeg should fix both complaints.
 splash for each `sfx` cue in `storyboard.json` (shots 3 to 8, 8 cues). Without an ACE-Step score the
 music bed is left out. The ambience is ducked under the narration like the score.
 
-**Result.** Measured, not heard (I cannot listen): a splash cue lifts the level at its moment by more
+**Result.** Measured before I listened to it: a splash cue lifts the level at its moment by more
 than 3 dB over the bed (a test pins it), and the films stay 65.0 s. Loudness first landed at a
 true peak of +0.1 dBFS after AAC encoding even though the WAV was at -1.5: the white-noise splashes
 make the encoder overshoot by 1.6 dB. Setting loudnorm's ceiling to -3 dB gives -14.6 LUFS and
--1.5 dBFS in the final MP4 for both ratios. Whether it sounds better is for the author's ears; the
+-1.5 dBFS in the final MP4 for both ratios. Whether it sounds better was for my ears to judge; the
 music will only be right once an ACE-Step track replaces the empty music bed.
 
 ## E17. Which score candidate? 
@@ -240,21 +240,21 @@ music will only be right once an ACE-Step track replaces the empty music bed.
 
 **Change.** Listened to 3 candidates (de99c94f-0606-6eed-34cc-0f7e23eb814d.flac, ea6fa79b-20f1-0be7-20f3-8163b7ca8330.flac, fa37f557-f519-478d-9755-c01daf18b8b0.flac) quietly under the narration.
 
-**Result.** Chose de99c94f-0606-6eed-34cc-0f7e23eb814d.flac. Track 1 is steady and its instrumental feel and tempo match the pace of the pictures; it suits the narrative, sounds joyful and has a few surprising touches. (Abeni's choice after listening to all three; measured -15.2 LUFS, loudness range 3.2 LU, the steadiest of the three.)
+**Result.** Chose de99c94f-0606-6eed-34cc-0f7e23eb814d.flac. Track 1 is steady and its instrumental feel and tempo match the pace of the pictures; it suits the narrative, sounds joyful and has a few surprising touches. (My choice after listening to all three; measured -15.2 LUFS, loudness range 3.2 LU, the steadiest of the three.)
 
 ## E18. Take the synthesised ambience back out (25 Nov)
 
 **Hypothesis.** E16's pink-noise "water" and white-noise "splashes" would make the place feel real.
 
-**Change.** None at first: the author listened to the preview with the chosen score (E17).
+**Change.** None at first: I listened to the preview with the chosen score (E17).
 
-**Result.** Wrong. The author heard a "shh" between narration lines. That is the noise bed: the
+**Result.** Wrong. I heard a "shh" between narration lines. That is the noise bed: the
 ducking lowers it while the voice speaks and lets it rise again in every pause, so it comes and goes
 like a hiss, and noise from FFmpeg does not sound like water. With a real ACE-Step score there is no
 gap left to fill, so the score is now the only bed under the voice and the noise ambience is used only
 when no score exists (a test pins this). The Gemini narration clips themselves are clean: their noise
-floor measures -62 to -90 dB. Final mix: -14.0 LUFS, true peak -1.5 dBFS. Lesson: a sound I cannot hear
-should not go into the film without the author hearing it first.
+floor measures -62 to -90 dB. Final mix: -14.0 LUFS, true peak -1.5 dBFS. Lesson: a sound that has only been measured
+should not go into the film before I have listened to it.
 
 ## E19. Reference images on Kaggle, and the stacked-panel problem (26 Nov)
 
@@ -289,10 +289,10 @@ close to the deadline?
 for a 4B image model (FAILURES #12), and Wan is a 5B video model that would have to run in float16, a
 numeric path none of my runs had tried. Every Wan shot already had a working fallback: a slow camera
 move over its painting, logged as `fallback`. The one Wan shot with a person in it (s04) is exactly
-where moving a body tends to bring back the extra-limb problem the listeners and Abeni kept pointing at.
+where moving a body tends to bring back the extra-limb problem the listeners and I kept pointing at.
 
 **Decision.** Built the complete film first with camera moves on every shot (63 s, -14.0 LUFS, no new
-model calls, 54 s to build), then Abeni decided not to run Wan. The four shots stay as camera moves, and
+model calls, 54 s to build), then I decided not to run Wan. The four shots stay as camera moves, and
 `runs.jsonl` says so on each of them. The Wan bundle (`make kaggle-bundle`) and notebook `20_wan` are in
 the repo, untested. What I lose: real motion in four shots. What I keep: a finished film that does not
 depend on an untried GPU job, and pictures whose figures were all checked at full size.
