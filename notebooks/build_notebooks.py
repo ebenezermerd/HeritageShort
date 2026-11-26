@@ -129,6 +129,14 @@ try:  # the VAE decode ran out of memory on a T4 at full size (FAILURES #12): de
 except Exception as e:
     print("no vae tiling:", e)
 
+def small(path):
+    """References at full size ran attention out of memory on a T4 (FAILURES #12). Under 512 px,
+    the same limit Cloudflare uses, they still carry the place and the faces."""
+    im = Image.open(path).convert("RGB")
+    im.thumbnail((496, 496))
+    return im
+
+
 for job in jobs:
     torch.cuda.empty_cache()
     out = OUT / job["out"]
@@ -137,7 +145,7 @@ for job in jobs:
     kwargs = dict(prompt=job["prompt"], width=job["width"], height=job["height"], guidance_scale=1.0,
                   num_inference_steps=4, generator=torch.Generator("cuda").manual_seed(job["seed"]))
     if job["refs"]:
-        kwargs["image"] = [Image.open(OUT / r).convert("RGB") for r in job["refs"]]
+        kwargs["image"] = [small(OUT / r) for r in job["refs"]]
     start = time.time()
     image = pipe(**kwargs).images[0]
     seconds = time.time() - start

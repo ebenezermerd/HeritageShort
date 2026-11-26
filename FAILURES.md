@@ -203,3 +203,8 @@ which Cloudflare's API did not (E14).
 **Then the first run ran out of GPU memory** in the VAE decode on GPU 1 (3.4 GiB asked, 2.5 GiB free),
 after denoising had already finished. Fix: `pipe.vae.enable_tiling()`, `torch.cuda.empty_cache()` between
 images, and `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`.
+
+**And again, in attention.** The next image ran out of memory inside the transformer's attention
+(5.2 GiB asked). The references were passed at 1024x768, so each added thousands of tokens, and on a T4
+in bf16 PyTorch uses its plain attention, whose memory grows with the square of the token count. The
+references are now shrunk to fit 496 px, the same limit Cloudflare uses, before they go in.
