@@ -1,6 +1,6 @@
 # Forty Springs
 
-A 65 second painted short about three brothers swimming at a spring in Arba Minch, narrated in
+A 63 second painted short about three brothers swimming at a spring in Arba Minch, narrated in
 English, with English subtitles, a score, and an end card saying it was made with AI. It is also a
 small pipeline: one file, `storyboard.json`, drives every stage, and changing one shot regenerates
 only that shot.
@@ -38,9 +38,11 @@ files are 60 to 90 seconds.
 |---|---|---|
 | contract | `pipeline/validate.py` | checks `storyboard.json` against `schema/storyboard.schema.json` |
 | narration | `pipeline/narrate.py` | one voice file per line (Gemini TTS) |
-| keyframes | `pipeline/keyframes.py` | one painted still per shot per ratio (FLUX.2 klein 4B on Cloudflare) |
-| candidates | `pipeline/candidates.py` | three options per shot to pick the cleanest from (`make candidates`) |
-| ambience | `pipeline/ambience.py` | water, birds and splash effects from FFmpeg, cued in `storyboard.json` |
+| references | `pipeline/references.py` | one picture of the spring and one of the three brothers, passed to every shot so they stay the same |
+| keyframes | `pipeline/keyframes.py` | one painted still per shot per ratio (FLUX.2 klein 4B, Cloudflare or Kaggle) |
+| Kaggle images | `pipeline/kaggle_images.py` | writes the image job list for notebook 15 and imports what it made |
+| candidates | `pipeline/candidates.py` | several options per shot; `pick` in `storyboard.json` names the chosen one, which is kept as the keyframe |
+| ambience | `pipeline/ambience.py` | water and splash effects from FFmpeg, used only if there is no score (E18) |
 | moving shots | `pipeline/shots.py` | Ken Burns by default, Wan 2.2 clips where you downloaded them |
 | music | `pipeline/music.py` | imports ACE-Step candidates, records which one you chose and why |
 | assembly | `pipeline/assemble.py` | cut, captions, ducking, loudness, end card, both ratios |
@@ -49,8 +51,9 @@ files are 60 to 90 seconds.
 
 ## The two jobs that need a GPU
 
-Wan 2.2 (moving shots) and ACE-Step (the score) run by hand in Kaggle notebooks. See
-`notebooks/README.md`. Without them the film still builds: moving shots fall back to a slow pan over
+ACE-Step (the score) and, when Cloudflare's quota ran out, the keyframes ran by hand in Kaggle
+notebooks (`15_keyframes`). Wan 2.2 (moving shots) has a notebook too but was not run for the
+submitted film (E20). See `notebooks/README.md`. Without them the film still builds: moving shots fall back to a slow pan over
 the painted still, and the score falls back to a quiet synthesised pad. Both fallbacks are logged.
 
 ## Change one shot
