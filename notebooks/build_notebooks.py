@@ -128,10 +128,11 @@ except Exception as e:
     print("no vae tiling:", e)
 
 def small(path):
-    """References at full size ran attention out of memory on a T4 (FAILURES #12). Under 512 px,
-    the same limit Cloudflare uses, they still carry the place and the faces."""
+    """References are extra tokens in the transformer's attention, and on a T4 in bf16 that attention
+    has no memory-efficient kernel. 496 px worked with one reference and failed with two (FAILURES #12);
+    320 px keeps a two-reference shot under what one reference at 496 px used."""
     im = Image.open(path).convert("RGB")
-    im.thumbnail((496, 496))
+    im.thumbnail((320, 320))
     return im
 
 

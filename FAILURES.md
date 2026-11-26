@@ -213,3 +213,11 @@ references are now shrunk to fit 496 px, the same limit Cloudflare uses, before 
 with two references ran GPU 1 out by 816 MB. `device_map="balanced"` had put the transformer and the VAE
 together on GPU 1. Switched to `enable_model_cpu_offload()`. To fit the day, 16:9 now gets 2 options per
 shot instead of 3 (the 9:16 phone cut is the main submission).
+
+**Fourth time, and the real cause.** With CPU offload GPU 0 held the transformer alone and still ran
+out with exactly the same 14.23 GiB allocated, so placement was never the problem. The transformer's
+weights plus attention over about 5,500 tokens (a 768x1344 image plus two 496 px references) is over
+15 GB, because a T4 has no memory-efficient attention kernel for bf16. Shot 1 had one reference
+(about 4,700 tokens) and fitted. References are now 320 px, which brings two-reference shots to about
+4,600 tokens. The cost is less face detail from the brothers' sheet; builds, skin, heights and the
+spring's layout still carry. Shot 1's candidates were made with 496 px references before this change.
