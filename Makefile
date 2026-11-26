@@ -43,3 +43,9 @@ save-assets:
 	mkdir -p assets/shots assets/music
 	if ls outputs/shots/raw/*.mp4 >/dev/null 2>&1; then cp outputs/shots/raw/*.mp4 outputs/shots/raw/*.json assets/shots/; else echo "no Wan clips yet, saving the score only"; fi
 	cp outputs/music/score.wav assets/music/score.wav
+	mkdir -p assets/keyframes/9x16 assets/keyframes/16x9 assets/references assets/narration/gemini
+	cp outputs/keyframes/9x16/s[0-9][0-9].png assets/keyframes/9x16/
+	cp outputs/keyframes/16x9/s[0-9][0-9].png assets/keyframes/16x9/
+	cp outputs/keyframes/manifest.json assets/keyframes/
+	cp outputs/references/spring.png outputs/references/brothers.png outputs/references/manifest.json assets/references/
+	cp outputs/narration/gemini/s[0-9][0-9].wav outputs/narration/gemini/manifest.json assets/narration/gemini/
