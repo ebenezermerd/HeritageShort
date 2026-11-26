@@ -185,3 +185,21 @@ brief asks for. Each line got 0.16 s shorter. Three tests pin it.
 
 **Lesson.** My smoke test checked that the audio decoded, not what it contained. A provider changed its
 response format and the only detector was the author's ears.
+
+## 12. Cloudflare's quota did not come back, so keyframes moved to Kaggle (26 Nov)
+
+**What broke.** Cloudflare's free 10,000 neurons are documented to reset at 00:00 UTC (03:00 EAT). At
+10:10 EAT on the deadline day it still answered `4006: you have used up your daily free allocation`.
+Cloudflare's community forum has other reports of the same thing: the quota not resetting for accounts
+that used it up. The new keyframes (reference conditioning, redesigned shots) could not wait.
+
+**What I did.** Ran the same model on a free Kaggle T4. FLUX.2 klein 4B is Apache 2.0 and not gated on
+Hugging Face, and diffusers has `Flux2KleinPipeline`, which takes reference images. The pipeline writes
+every job (exact prompt, seed, size, references) to `image_jobs.json` (`pipeline/kaggle_images.py`), the
+notebook `15_keyframes` only executes them, and the results are imported with provider `kaggle` in
+`runs.jsonl`. A side benefit: on a GPU with a fixed generator seed, the same seed gives the same image,
+which Cloudflare's API did not (E14).
+
+**Then the first run ran out of GPU memory** in the VAE decode on GPU 1 (3.4 GiB asked, 2.5 GiB free),
+after denoising had already finished. Fix: `pipe.vae.enable_tiling()`, `torch.cuda.empty_cache()` between
+images, and `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`.

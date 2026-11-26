@@ -124,8 +124,13 @@ except Exception as e:
     pipe = Flux2KleinPipeline.from_pretrained(MODEL, torch_dtype=torch.bfloat16)
     pipe.enable_model_cpu_offload()
     placement = "cpu_offload"
+try:  # the VAE decode ran out of memory on a T4 at full size (FAILURES #12): decode in tiles
+    pipe.vae.enable_tiling()
+except Exception as e:
+    print("no vae tiling:", e)
 
 for job in jobs:
+    torch.cuda.empty_cache()
     out = OUT / job["out"]
     if out.exists():
         continue
@@ -154,7 +159,7 @@ save("15_keyframes", [
        "skips finished ones, so after a timeout just run it again."),
     code("!pip install -q -U diffusers transformers accelerate"),
     code("%%writefile /kaggle/working/gen_keyframes.py\n" + KEYFRAME_SCRIPT.strip()),
-    code("!python /kaggle/working/gen_keyframes.py"),
+    code("!PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True python /kaggle/working/gen_keyframes.py"),
 ])
 
 # ---------------------------------------------------------------- 20 wan
