@@ -32,7 +32,7 @@
       "narration": "Arba Minch means forty springs.",
       "image_prompt": "Wide view of the spring from the bank in early morning light, the turquoise pool and the fallen log under the water, no people",
       "seed": 101,
-      "duration_s": 7,
+      "duration_s": 6,
       "motion": {
         "mode": "wan",
         "camera": "push_in",
@@ -68,7 +68,7 @@
     {
       "id": "s03",
       "reason": "The oldest goes first: Beki's jump starts the day.",
-      "narration": "Beki, the oldest, always jumped first.",
+      "narration": "Beki, the oldest, always jumped first, even when the water was cold.",
       "image_prompt": "Seen from far away across the pool: the tallest brother as a small dark silhouette high in the air above the spring against bright morning light through the trees, a simple clear body shape, arms out",
       "seed": 104,
       "duration_s": 6,
@@ -93,7 +93,7 @@
     {
       "id": "s04",
       "reason": "The middle brother follows: Tesfa goes second, shown by his splash.",
-      "narration": "Then Tesfa.",
+      "narration": "Then Tesfa. Most days.",
       "image_prompt": "A big white splash crown rising from the middle of the turquoise pool where the middle brother has just landed, only the top of his head visible inside the splash, droplets in the sunlight, seen from the bank",
       "seed": 104,
       "duration_s": 5,
@@ -143,9 +143,9 @@
     },
     {
       "id": "s06",
-      "reason": "The tricks from the tree: the acrobatics Abeni remembers.",
-      "narration": "Then it was flips off the tree, and whatever tricks we could think of.",
-      "image_prompt": "Far away: a tiny dark silhouette of a boy mid-flip in the air beside the big tree's low branch over the spring, against bright sunlight through the leaves, water drops glittering below",
+      "reason": "The tricks off the fallen tree: Tesfa's favourite stunt (listener test 1).",
+      "narration": "Then it was flips off the fallen tree, and whatever tricks we could think of.",
+      "image_prompt": "Far away: a tiny dark silhouette of a boy mid-flip in the air above a fallen tree trunk that leans out over the spring, against bright sunlight through the leaves, water drops glittering below",
       "seed": 107,
       "duration_s": 7,
       "motion": {
@@ -196,7 +196,7 @@
     {
       "id": "s08",
       "reason": "The core feeling: all three together, shouting and laughing.",
-      "narration": "And all of us shouting. Whoa, whoa, whoa.",
+      "narration": "And all of us shouting. Whoa! Whoa! Whoa!",
       "image_prompt": "The three brothers in the middle of the turquoise pool at a middle distance, only their heads and shoulders above the water, arms hidden under the surface, mouths open shouting and laughing, the tallest on the left",
       "seed": 110,
       "duration_s": 7,
@@ -248,7 +248,7 @@
       "narration": null,
       "image_prompt": "The three brothers sitting side by side on the red earth bank, seen from behind, their feet in the water, warm evening light, the tallest on the left",
       "seed": 111,
-      "duration_s": 6,
+      "duration_s": 5,
       "motion": {
         "mode": "kenburns",
         "camera": "push_in",
@@ -283,8 +283,8 @@
         1024,
         768
       ],
-      "prompt": "Wide establishing view of one forest spring in Arba Minch, Ethiopia: a round clear turquoise pool, a large fallen log lying under the water, a steep red-brown earth bank on the left, one big old tree with a long low branch leaning over the water on the right, tall trees all around, morning sun through the leaves, no people",
-      "use": "the spring: the same turquoise pool, the fallen log, the red-brown bank and the big tree with the low branch"
+      "prompt": "Wide establishing view of one forest spring in Arba Minch, Ethiopia: a round clear turquoise pool, a large fallen log lying under the water, a steep red-brown earth bank on the left, a fallen tree trunk leaning out over the water on the right, tall trees all around, morning sun through the leaves, no people",
+      "use": "the spring: the same turquoise pool, the fallen log under the water, the red-brown bank and the fallen trunk leaning over the water"
     },
     {
       "id": "brothers",
